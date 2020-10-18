@@ -1,13 +1,11 @@
 import {
   CreateDateColumn,
   DeleteDateColumn,
-  Entity,
   VersionColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity()
-export class BaseEntity {
+export abstract class BaseEntity {
   @CreateDateColumn()
   created!: Date;
 
