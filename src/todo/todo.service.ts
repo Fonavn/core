@@ -4,12 +4,12 @@ import { Inject } from '@nestjs/common';
 import { TENANT_CONNECTION } from 'src/tenant/const';
 import { TenantService } from 'src/tenant/tenant-service.decorator';
 import { Connection } from 'typeorm';
-import { TodoItemEntity } from './todo-item.entity';
+import { TodoEntity } from './todo.entity';
 
-@QueryService(TodoItemEntity)
+@QueryService(TodoEntity)
 @TenantService()
-export class TodoItemService extends TypeOrmQueryService<TodoItemEntity> {
+export class TodoItemService extends TypeOrmQueryService<TodoEntity> {
   constructor(@Inject(TENANT_CONNECTION) private connection: Connection) {
-    super(connection.getRepository(TodoItemEntity));
+    super(connection.getRepository(TodoEntity));
   }
 }

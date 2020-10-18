@@ -1,4 +1,4 @@
-import { TodoItemDTO } from './todo-item.dto';
+import { TodoItemDTO } from './todo.dto';
 
 describe('TodoItemDto', () => {
   it('should be defined', () => {

@@ -1,3 +1,4 @@
+import { BaseEntity } from 'src/common/database/base.entity';
 import {
   Column,
   CreateDateColumn,
@@ -6,8 +7,8 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity()
-export class TodoItemEntity {
+@Entity('todo')
+export class TodoEntity extends BaseEntity {
   @PrimaryGeneratedColumn()
   id!: string;
 

@@ -3,7 +3,7 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { TodoItemModule } from './todo-item/todo-item.module';
+import { TodoItemModule } from './todo/todo.module';
 import { TenantModule } from './tenant/tenant.module';
 import { CommonModule } from './common/common.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';

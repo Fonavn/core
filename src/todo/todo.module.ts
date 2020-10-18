@@ -2,9 +2,9 @@ import { NestjsQueryGraphQLModule } from '@nestjs-query/query-graphql';
 import { NestjsQueryTypeOrmModule } from '@nestjs-query/query-typeorm';
 import { Module } from '@nestjs/common';
 import { TenantModule } from 'src/tenant/tenant.module';
-import { TodoItemDTO } from './todo-item.dto';
-import { TodoItemEntity } from './todo-item.entity';
-import { TodoItemService } from './todo-item.service';
+import { TodoItemDTO } from './todo.dto';
+import { TodoEntity } from './todo.entity';
+import { TodoItemService } from './todo.service';
 
 @Module({
   imports: [
@@ -12,7 +12,7 @@ import { TodoItemService } from './todo-item.service';
       // import the NestjsQueryTypeOrmModule to register the entity with typeorm
       // and provide a QueryService
       imports: [
-        NestjsQueryTypeOrmModule.forFeature([TodoItemEntity]),
+        NestjsQueryTypeOrmModule.forFeature([TodoEntity]),
         TenantModule,
       ],
       services: [TodoItemService],
@@ -20,7 +20,7 @@ import { TodoItemService } from './todo-item.service';
       resolvers: [
         {
           DTOClass: TodoItemDTO,
-          EntityClass: TodoItemEntity,
+          EntityClass: TodoEntity,
           ServiceClass: TodoItemService,
         },
       ],
