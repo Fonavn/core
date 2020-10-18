@@ -11,11 +11,20 @@ import { TodoItemService } from './todo-item.service';
     NestjsQueryGraphQLModule.forFeature({
       // import the NestjsQueryTypeOrmModule to register the entity with typeorm
       // and provide a QueryService
-      imports: [NestjsQueryTypeOrmModule.forFeature([TodoItemEntity]), TenantModule],
+      imports: [
+        NestjsQueryTypeOrmModule.forFeature([TodoItemEntity]),
+        TenantModule,
+      ],
       services: [TodoItemService],
       // describe the resolvers you want to expose
-      resolvers: [{ DTOClass: TodoItemDTO, EntityClass: TodoItemEntity, ServiceClass: TodoItemService }],
+      resolvers: [
+        {
+          DTOClass: TodoItemDTO,
+          EntityClass: TodoItemEntity,
+          ServiceClass: TodoItemService,
+        },
+      ],
     }),
   ],
 })
-export class TodoItemModule { }
+export class TodoItemModule {}

@@ -18,4 +18,3 @@ export class TodoItemDTO {
   @Field(() => GraphQLISODateTime)
   updated!: Date;
 }
-

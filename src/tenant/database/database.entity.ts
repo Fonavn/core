@@ -1,10 +1,6 @@
 import { BaseEntity } from 'src/common/database/base.entity';
 import { DatabaseType, VarcharLength } from 'src/common/database/const';
-import {
-  Column,
-  Entity,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('database')
 export class DatabaseEntity extends BaseEntity {
@@ -15,34 +11,34 @@ export class DatabaseEntity extends BaseEntity {
   type!: string;
 
   @Column({
-    type: "varchar",
+    type: 'varchar',
     length: VarcharLength.TINY,
     nullable: true,
   })
   host: string;
 
   @Column({
-    type: "int",
+    type: 'int',
     nullable: true,
   })
   port!: number;
 
   @Column({
-    type: "varchar",
+    type: 'varchar',
     length: VarcharLength.TINY,
     nullable: false,
   })
   username!: string;
 
   @Column({
-    type: "varchar",
+    type: 'varchar',
     length: VarcharLength.TINY,
     nullable: true,
   })
   password!: string;
 
   @Column({
-    type: "varchar",
+    type: 'varchar',
     length: VarcharLength.TINY,
     nullable: false,
   })
