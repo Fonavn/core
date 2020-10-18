@@ -34,6 +34,7 @@
     "class-validator": "^0.12.2",
     "dataloader": "^2.0.0",
     "graphql-relay": "^0.6.0",
+    "husky": "^4.3.0",
     "pg": "^8.4.1",
     "reflect-metadata": "^0.1.13",
     "rimraf": "^3.0.2",
@@ -75,5 +76,11 @@
     },
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn format && yarn lint && yarn test",
+      "pre-push": "yarn lint && yarn test && yarn test:e2e"
+    }
   }
 }
