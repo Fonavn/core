@@ -4,24 +4,32 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TodoItemModule } from './todo-item/todo-item.module';
+import { TenantModule } from './tenant/tenant.module';
+import { CommonModule } from './common/common.module';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import masterDatabase from './config/master-database';
 
 @Module({
   imports: [
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      database: 'nestjs-query',
-      username: 'devsoloyoi',
-      autoLoadEntities: true,
-      synchronize: true,
-      logging: true,
+    ConfigModule.forRoot({
+      load: [masterDatabase]
+    }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (config: ConfigService) => {
+        return config.get('database')
+      },
+      inject: [ConfigService],
     }),
     GraphQLModule.forRoot({
       // set to true to automatically generate schema
       autoSchemaFile: true,
     }),
     TodoItemModule,
+    TenantModule,
+    CommonModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }
