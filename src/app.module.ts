@@ -8,11 +8,20 @@ import { TenantModule } from './tenant/tenant.module';
 import { CommonModule } from './common/common.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import masterDatabase from './config/master-database';
+import loggerOptions from './config/logger';
+import { WinstonModule } from 'nest-winston';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
-      load: [masterDatabase],
+      load: [masterDatabase, loggerOptions],
+    }),
+    WinstonModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (config: ConfigService) => {
+        return config.get('winston');
+      },
+      inject: [ConfigService],
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
