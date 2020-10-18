@@ -10,7 +10,7 @@ import { TENANT_CONNECTION } from './const';
 import { DatabaseModule } from './database/database.module';
 import { TenantEntity } from './tenant.entity';
 import { Connection, createConnection, getConnection } from 'typeorm';
-import { TodoItemEntity } from 'src/todo-item/todo-item.entity';
+import { TodoEntity } from 'src/todo/todo.entity';
 import { TENANT_ID_HEADER } from 'src/common/const';
 
 @Module({
@@ -73,7 +73,7 @@ export class TenantModule {
             username: database.username,
             password: database.password,
             database: database.database,
-            entities: [TodoItemEntity],
+            entities: [TodoEntity],
             synchronize: true,
           });
 
