@@ -1,1 +1,1 @@
-export const TENANT_ID_HEADER = 'tnid'
+export const TENANT_ID_HEADER = 'tnid';

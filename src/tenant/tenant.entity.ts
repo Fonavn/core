@@ -15,36 +15,36 @@ export class TenantEntity extends BaseEntity {
   id!: string;
 
   @Column({
-    type: "varchar",
+    type: 'varchar',
     length: VarcharLength.TINY,
     comment: 'This will be the url in case host not setted',
     nullable: false,
-    unique: true
+    unique: true,
   })
   path!: string;
 
   @Column({
-    type: "varchar",
+    type: 'varchar',
     length: VarcharLength.TINY,
     comment: 'User can register a host',
     nullable: true,
-    unique: true
+    unique: true,
   })
   host: string;
 
   @Column({
-    type: "varchar",
+    type: 'varchar',
     length: VarcharLength.MEDIUM,
-    comment: 'Company\'s name',
+    comment: "Company's name",
     nullable: false,
-    unique: true
+    unique: true,
   })
   name!: string;
 
   @Column({
-    type: "varchar",
+    type: 'varchar',
     length: VarcharLength.MEDIUM,
-    comment: 'Company\'s description',
+    comment: "Company's description",
     nullable: true,
   })
   description!: string;

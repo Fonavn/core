@@ -12,12 +12,12 @@ import masterDatabase from './config/master-database';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      load: [masterDatabase]
+      load: [masterDatabase],
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       useFactory: (config: ConfigService) => {
-        return config.get('database')
+        return config.get('database');
       },
       inject: [ConfigService],
     }),
@@ -32,4 +32,4 @@ import masterDatabase from './config/master-database';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}

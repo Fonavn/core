@@ -1,4 +1,9 @@
-import { BadRequestException, MiddlewareConsumer, Module, Scope } from '@nestjs/common';
+import {
+  BadRequestException,
+  MiddlewareConsumer,
+  Module,
+  Scope,
+} from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TENANT_CONNECTION } from './const';
@@ -9,41 +14,37 @@ import { TodoItemEntity } from 'src/todo-item/todo-item.entity';
 import { TENANT_ID_HEADER } from 'src/common/const';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([TenantEntity]),
-    DatabaseModule
-  ],
+  imports: [TypeOrmModule.forFeature([TenantEntity]), DatabaseModule],
   providers: [
     {
       provide: TENANT_CONNECTION,
-      inject: [
-        REQUEST,
-        Connection,
-      ],
+      inject: [REQUEST, Connection],
       scope: Scope.REQUEST,
       useFactory: async (request, connection) => {
-        const tenant: TenantEntity = await connection.getRepository(TenantEntity)
-          .findOne(({ where: { path: request.req.headers[TENANT_ID_HEADER] } }));
+        const tenant: TenantEntity = await connection
+          .getRepository(TenantEntity)
+          .findOne({ where: { path: request.req.headers[TENANT_ID_HEADER] } });
 
-          return getConnection(tenant.path);
-      }
-    }
+        return getConnection(tenant.path);
+      },
+    },
   ],
-  exports: [
-    TENANT_CONNECTION
-  ]
+  exports: [TENANT_CONNECTION],
 })
 export class TenantModule {
-  constructor(private readonly connection: Connection) { }
+  constructor(private readonly connection: Connection) {}
 
   configure(consumer: MiddlewareConsumer): void {
     consumer
       .apply(async (req, res, next) => {
-
         const tenant: TenantEntity = await this.connection
           // TODO for future use host now use tenantId
           // .getRepository(TenantEntity).findOne(({ relations: ['database'], where: { host: req.headers.host } }));
-          .getRepository(TenantEntity).findOne(({ relations: ['database'], where: { path: req.headers[TENANT_ID_HEADER] } }));
+          .getRepository(TenantEntity)
+          .findOne({
+            relations: ['database'],
+            where: { path: req.headers[TENANT_ID_HEADER] },
+          });
 
         if (!tenant) {
           throw new BadRequestException(
@@ -74,7 +75,7 @@ export class TenantModule {
             database: database.database,
             entities: [TodoItemEntity],
             synchronize: true,
-          })
+          });
 
           if (createdConnection) {
             next();
@@ -85,6 +86,7 @@ export class TenantModule {
             );
           }
         }
-      }).forRoutes('*');
+      })
+      .forRoutes('*');
   }
 }
