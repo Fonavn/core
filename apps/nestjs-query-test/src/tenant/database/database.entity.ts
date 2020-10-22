@@ -1,6 +1,6 @@
-import { BaseEntity } from 'src/common/database/base.entity';
-import { DatabaseType, VarcharLength } from 'src/common/database/const';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { BaseEntity } from '../../common/database/base.entity';
+import { DatabaseType, VarcharLength } from '../../common/database/const';
 
 @Entity('database')
 export class DatabaseEntity extends BaseEntity {

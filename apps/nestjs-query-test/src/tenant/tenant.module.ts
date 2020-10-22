@@ -10,8 +10,8 @@ import { TENANT_CONNECTION } from './const';
 import { DatabaseModule } from './database/database.module';
 import { TenantEntity } from './tenant.entity';
 import { Connection, createConnection, getConnection } from 'typeorm';
-import { TodoEntity } from 'src/todo/todo.entity';
-import { TENANT_ID_HEADER } from 'src/common/const';
+import { TENANT_ID_HEADER } from '../common/const';
+import { TodoEntity } from '../todo/todo.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([TenantEntity]), DatabaseModule],

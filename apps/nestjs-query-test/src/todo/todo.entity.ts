@@ -1,4 +1,4 @@
-import { BaseEntity } from 'src/common/database/base.entity';
+import { BaseEntity } from '../common/database/base.entity';
 import {
   Column,
   CreateDateColumn,

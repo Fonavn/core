@@ -1,7 +1,7 @@
 import { NestjsQueryGraphQLModule } from '@nestjs-query/query-graphql';
 import { NestjsQueryTypeOrmModule } from '@nestjs-query/query-typeorm';
 import { Module } from '@nestjs/common';
-import { TenantModule } from 'src/tenant/tenant.module';
+import { TenantModule } from '../tenant/tenant.module';
 import { TodoItemDTO } from './todo.dto';
 import { TodoEntity } from './todo.entity';
 import { TodoItemService } from './todo.service';
