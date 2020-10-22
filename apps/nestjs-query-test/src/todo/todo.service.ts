@@ -1,8 +1,8 @@
 import { QueryService } from '@nestjs-query/core';
 import { TypeOrmQueryService } from '@nestjs-query/query-typeorm';
 import { Inject } from '@nestjs/common';
-import { TENANT_CONNECTION } from 'src/tenant/const';
-import { TenantService } from 'src/tenant/tenant-service.decorator';
+import { TENANT_CONNECTION } from '../tenant/const';
+import { TenantService } from '../tenant/tenant-service.decorator';
 import { Connection } from 'typeorm';
 import { TodoEntity } from './todo.entity';
 

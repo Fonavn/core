@@ -1,5 +1,5 @@
-import { BaseEntity } from 'src/common/database/base.entity';
-import { VarcharLength } from 'src/common/database/const';
+import { BaseEntity } from '../common/database/base.entity';
+import { VarcharLength } from '../common/database/const';
 import {
   Column,
   Entity,
