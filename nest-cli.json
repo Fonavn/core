@@ -37,6 +37,15 @@
       "compilerOptions": {
         "tsConfigPath": "apps/fona/tsconfig.app.json"
       }
+    },
+    "nestjs-crud": {
+      "type": "application",
+      "root": "apps/nestjs-crud",
+      "entryFile": "main",
+      "sourceRoot": "apps/nestjs-crud/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/nestjs-crud/tsconfig.app.json"
+      }
     }
   },
   "compilerOptions": {
