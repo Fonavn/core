@@ -15,8 +15,8 @@ import {
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
-  ApiImplicitParam,
-  ApiImplicitQuery,
+  ApiParam,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -73,7 +73,7 @@ export class GroupsController {
     description: 'The record has been successfully updated.',
   })
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'Forbidden.' })
-  @ApiImplicitParam({ name: 'id', type: Number })
+  @ApiParam({ name: 'id', type: Number })
   @Put(':id')
   async update(@Param('id', new ParseIntPipe()) id, @Body() dto: InGroupDto) {
     if (this.coreConfig.demo) {
@@ -100,7 +100,7 @@ export class GroupsController {
     description: 'The record has been successfully deleted.',
   })
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'Forbidden.' })
-  @ApiImplicitParam({ name: 'id', type: Number })
+  @ApiParam({ name: 'id', type: Number })
   @Delete(':id')
   async delete(@Param('id', new ParseIntPipe()) id) {
     if (this.coreConfig.demo) {
@@ -127,7 +127,7 @@ export class GroupsController {
     description: '',
   })
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'Forbidden.' })
-  @ApiImplicitParam({ name: 'id', type: Number })
+  @ApiParam({ name: 'id', type: Number })
   @Get(':id')
   async findById(@Param('id', new ParseIntPipe()) id) {
     try {
@@ -151,25 +151,25 @@ export class GroupsController {
     description: '',
   })
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'Forbidden.' })
-  @ApiImplicitQuery({
+  @ApiQuery({
     name: 'q',
     required: false,
     type: String,
     description: 'Text for search (default: empty)',
   })
-  @ApiImplicitQuery({
+  @ApiQuery({
     name: 'sort',
     required: false,
     type: String,
     description: 'Column name for sort (default: -id)',
   })
-  @ApiImplicitQuery({
+  @ApiQuery({
     name: 'per_page',
     required: false,
     type: Number,
     description: 'Number of results to return per page. (default: 10)',
   })
-  @ApiImplicitQuery({
+  @ApiQuery({
     name: 'cur_page',
     required: false,
     type: Number,

@@ -15,8 +15,8 @@ import {
 } from '@nestjs/common';
 import {
   ApiBearerAuth,
-  ApiImplicitParam,
-  ApiImplicitQuery,
+  ApiParam,
+  ApiQuery,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
@@ -77,7 +77,7 @@ export class UsersController {
     description: 'The record has been successfully updated.',
   })
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'Forbidden.' })
-  @ApiImplicitParam({ name: 'id', type: Number })
+  @ApiParam({ name: 'id', type: Number })
   @Put(':id')
   async update(@Param('id', new ParseIntPipe()) id, @Body() dto: InUserDto) {
     if (this.coreConfig.demo) {
@@ -104,7 +104,7 @@ export class UsersController {
     description: 'The record has been successfully deleted.',
   })
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'Forbidden.' })
-  @ApiImplicitParam({ name: 'id', type: Number })
+  @ApiParam({ name: 'id', type: Number })
   @Delete(':id')
   async delete(@Param('id', new ParseIntPipe()) id) {
     if (this.coreConfig.demo) {
@@ -131,7 +131,7 @@ export class UsersController {
     description: '',
   })
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'Forbidden.' })
-  @ApiImplicitParam({ name: 'id', type: Number })
+  @ApiParam({ name: 'id', type: Number })
   @Get(':id')
   async findById(@Param('id', new ParseIntPipe()) id) {
     try {
@@ -155,31 +155,31 @@ export class UsersController {
     description: '',
   })
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'Forbidden.' })
-  @ApiImplicitQuery({
+  @ApiQuery({
     name: 'q',
     required: false,
     type: String,
     description: 'Text for search (default: empty)',
   })
-  @ApiImplicitQuery({
+  @ApiQuery({
     name: 'sort',
     required: false,
     type: String,
     description: 'Column name for sort (default: -id)',
   })
-  @ApiImplicitQuery({
+  @ApiQuery({
     name: 'per_page',
     required: false,
     type: Number,
     description: 'Number of results to return per page. (default: 10)',
   })
-  @ApiImplicitQuery({
+  @ApiQuery({
     name: 'cur_page',
     required: false,
     type: Number,
     description: 'A page number within the paginated result set. (default: 1)',
   })
-  @ApiImplicitQuery({
+  @ApiQuery({
     name: 'group',
     required: false,
     type: Number,
