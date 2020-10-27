@@ -57,7 +57,7 @@ export class OauthTokensAccesstoken {
   @IsOptional()
   scope: string = undefined;
 
-  @ManyToOne(type => User, { eager: true })
+  @ManyToOne(() => User, { eager: true })
   @IsNotEmpty()
   @JoinColumn({ name: 'user_id' })
   user: User = undefined;

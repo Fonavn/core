@@ -26,7 +26,7 @@ export class ContentType {
   title: string = undefined;
 
   @OneToMany(
-    type => Permission,
+    () => Permission,
     permission => permission.contentType,
   )
   permissions: Permission[];

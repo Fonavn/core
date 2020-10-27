@@ -27,7 +27,7 @@ export class Group {
   @MaxLength(255)
   title: string = undefined;
 
-  @ManyToMany(type => Permission, {
+  @ManyToMany(() => Permission, {
     cascade: ['remove'],
   })
   @JoinTable({
@@ -44,7 +44,7 @@ export class Group {
   })
   permissions: Permission[];
 
-  @ManyToMany(type => User)
+  @ManyToMany(() => User)
   @JoinTable({
     // not work on run cli migration:
     name: 'user_groups',

@@ -99,5 +99,6 @@ export class AddOauthTokensAccesstokenTable1533634559617
     }
   }
 
-  public async down(queryRunner: QueryRunner): Promise<any> {}
+  /* eslint-disable @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars */
+  public async down(_queryRunner: QueryRunner): Promise<any> {}
 }

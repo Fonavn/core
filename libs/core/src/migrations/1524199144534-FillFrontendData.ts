@@ -69,10 +69,11 @@ export class FillFrontendData1524199144534 implements MigrationInterface {
       ),
       ...permissions,
     ];
-    const groups = await queryRunner.manager
+    await queryRunner.manager
       .getRepository<Group1524199022084>(Group1524199022084)
       .save(plainToClass(Group1524199022084, [gUser, gAdmin]));
   }
 
-  public async down(queryRunner: QueryRunner): Promise<any> {}
+  /* eslint-disable @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars */
+  public async down(_queryRunner: QueryRunner): Promise<any> {}
 }

@@ -29,11 +29,11 @@ export class Permission1524199022084 {
   @MaxLength(255)
   title: string = undefined;
 
-  @ManyToOne(type => ContentType1524199022084, { eager: true, nullable: true })
+  @ManyToOne(() => ContentType1524199022084, { eager: true, nullable: true })
   @JoinColumn({ name: 'content_type_id' })
   contentType: ContentType1524199022084 = undefined;
 
-  @ManyToMany(type => Group1524199022084)
+  @ManyToMany(() => Group1524199022084)
   @JoinTable({
     // not work on run cli migration:
     name: 'group_permissions',

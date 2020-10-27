@@ -61,7 +61,6 @@ export class ContentTypesService {
     sort?: string;
   }) {
     try {
-      let objects: [ContentType[], number];
       let qb = this.repository.createQueryBuilder('contentType');
       if (options.q) {
         qb = qb.where(
@@ -87,7 +86,7 @@ export class ContentTypesService {
       qb = qb
         .skip((options.curPage - 1) * options.perPage)
         .take(options.perPage);
-      objects = await qb.getManyAndCount();
+      const objects: [ContentType[], number] = await qb.getManyAndCount();
       return {
         contentTypes: objects[0],
         meta: {

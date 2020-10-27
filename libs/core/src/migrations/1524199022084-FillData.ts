@@ -148,7 +148,7 @@ export class FillData1524199022084 implements MigrationInterface {
         }),
       );
     const tempUser = new User1524199022084();
-    const uUsers = await queryRunner.manager
+    await queryRunner.manager
       .getRepository<User1524199022084>(User1524199022084)
       .save(
         plainToClass(User1524199022084, [
@@ -189,5 +189,6 @@ export class FillData1524199022084 implements MigrationInterface {
       );
   }
 
-  public async down(queryRunner: QueryRunner): Promise<any> {}
+  /* eslint-disable @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars */
+  public async down(_queryRunner: QueryRunner): Promise<any> {}
 }

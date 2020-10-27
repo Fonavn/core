@@ -361,5 +361,6 @@ export class Init1524197725191 implements MigrationInterface {
     }
   }
 
+  /* eslint-disable @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars */
   public async down(queryRunner: QueryRunner): Promise<any> {}
 }

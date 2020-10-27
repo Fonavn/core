@@ -5,20 +5,16 @@ import {
   HttpCode,
   HttpStatus,
   Inject,
-  Logger,
   Post,
   Req,
 } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
-import { CORE_CONFIG_TOKEN, ICoreConfig, OutAccountDto } from '@lib/core';
+import { CORE_CONFIG_TOKEN, ICoreConfig } from '@lib/core';
 import { plainToClass } from 'class-transformer';
 import { JsonWebTokenError } from 'jsonwebtoken';
 import { FacebookSignInDto } from '../dto/facebook-signIn.dto';
-import { FacebookTokenDto } from '../dto/facebook-token.dto';
 import { GooglePlusSignInDto } from '../dto/google-plus-signIn.dto';
 import { RedirectUriDto } from '../dto/redirect-uri.dto';
-import { SignInDto } from '../dto/sign-in.dto';
-import { SignUpDto } from '../dto/sign-up.dto';
 import { TokenDto } from '../dto/token.dto';
 import { UserTokenDto } from '../dto/user-token.dto';
 import { IJwtPayload } from '../interfaces/jwt-payload.interface';
@@ -44,7 +40,7 @@ export class AuthController {
   })
   async requestJsonWebTokenAfterSignIn(
     @Req() req,
-    @Body() signInDto: SignInDto,
+    // @Body() signInDto: SignInDto,
   ): Promise<UserTokenDto> {
     const token = await this.tokenService.create(req.user);
     return plainToClass(UserTokenDto, { user: req.user, token });
@@ -60,7 +56,7 @@ export class AuthController {
   })
   async requestJsonWebTokenAfterSignUp(
     @Req() req,
-    @Body() signUpDto: SignUpDto,
+    // @Body() signUpDto: SignUpDto,
   ): Promise<UserTokenDto> {
     const token = await this.tokenService.create(req.user);
     return plainToClass(UserTokenDto, { user: req.user, token });
@@ -135,7 +131,7 @@ export class AuthController {
   @Post('facebook/token')
   async requestJsonWebTokenAfterFacebookSignIn(
     @Req() req,
-    @Body() facebookTokenDto: FacebookTokenDto,
+    // @Body() facebookTokenDto: FacebookTokenDto,
   ): Promise<UserTokenDto> {
     const token = await this.tokenService.create(req.user);
     return plainToClass(UserTokenDto, { user: req.user, token });

@@ -68,7 +68,7 @@ export class User1524199022084 {
   @Column({ type: Date, name: 'date_of_birth', nullable: true })
   dateOfBirth: Date = undefined;
 
-  @ManyToMany(type => Group1524199022084)
+  @ManyToMany(() => Group1524199022084)
   @JoinTable({
     // not work on run cli migration:
     name: 'user_groups',

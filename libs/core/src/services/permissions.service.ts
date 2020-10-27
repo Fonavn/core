@@ -1,9 +1,7 @@
-import { Inject, Injectable, MethodNotAllowedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CORE_CONFIG_TOKEN } from '../configs/core.config';
 import { Permission } from '../entities/permission.entity';
-import { ICoreConfig } from '../interfaces/core-config.interface';
 
 @Injectable()
 export class PermissionsService {
@@ -60,7 +58,6 @@ export class PermissionsService {
     sort?: string;
   }) {
     try {
-      let objects: [Permission[], number];
       let qb = this.repository.createQueryBuilder('permission');
       qb = qb.leftJoinAndSelect('permission.contentType', 'contentType');
       if (options.group) {
@@ -98,7 +95,7 @@ export class PermissionsService {
       qb = qb
         .skip((options.curPage - 1) * options.perPage)
         .take(options.perPage);
-      objects = await qb.getManyAndCount();
+      const objects: [Permission[], number] = await qb.getManyAndCount();
       return {
         permissions: objects[0],
         meta: {

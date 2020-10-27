@@ -60,7 +60,6 @@ export class GroupsService {
     sort?: string;
   }) {
     try {
-      let objects: [Group[], number];
       let qb = this.repository.createQueryBuilder('group');
       qb = qb.leftJoinAndSelect('group.permissions', 'permission');
       qb = qb.leftJoinAndSelect('permission.contentType', 'contentType');
@@ -89,7 +88,7 @@ export class GroupsService {
       qb = qb
         .skip((options.curPage - 1) * options.perPage)
         .take(options.perPage);
-      objects = await qb.getManyAndCount();
+      const objects: [Group[], number] = await qb.getManyAndCount();
       return {
         groups: objects[0],
         meta: {

@@ -33,8 +33,8 @@ export class OauthTokensAccesstokensService {
 
   async delete(options: { id: number }) {
     try {
-      let item = await this.repository.findOneOrFail(options.id);
-      item = await this.repository.save(item);
+      const item = await this.repository.findOneOrFail(options.id);
+      await this.repository.save(item);
       await this.repository.delete(options.id);
       return { oauthTokensAccesstoken: null };
     } catch (error) {
@@ -71,7 +71,6 @@ export class OauthTokensAccesstokensService {
     sort?: string;
   }) {
     try {
-      let objects: [OauthTokensAccesstoken[], number];
       let qb = this.repository.createQueryBuilder('oauthTokensAccesstoken');
       if (options.q) {
         qb = qb.where(
@@ -100,7 +99,10 @@ export class OauthTokensAccesstokensService {
       qb = qb
         .skip((options.curPage - 1) * options.perPage)
         .take(options.perPage);
-      objects = await qb.getManyAndCount();
+      const objects: [
+        OauthTokensAccesstoken[],
+        number,
+      ] = await qb.getManyAndCount();
       return {
         contentTypes: objects[0],
         meta: {

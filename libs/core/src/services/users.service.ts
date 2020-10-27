@@ -109,7 +109,6 @@ export class UsersService {
     sort?: string;
   }) {
     try {
-      let objects: [User[], number];
       let qb = this.repository.createQueryBuilder('user');
       if (options.group) {
         qb = qb
@@ -144,7 +143,7 @@ export class UsersService {
       qb = qb
         .skip((options.curPage - 1) * options.perPage)
         .take(options.perPage);
-      objects = await qb.getManyAndCount();
+      const objects: [User[], number] = await qb.getManyAndCount();
       return {
         users: objects[0],
         meta: {
