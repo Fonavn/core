@@ -7,21 +7,21 @@ import {
   Provider,
 } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { RuckenCoreModule } from '@lib/core';
+import { CoreModule } from '@lib/core';
 import { authenticate } from 'passport';
 import { AUTH_CONTROLLERS } from './controllers';
 import { AUTH_ENTITIES } from './entities';
 import { AUTH_SERVICES } from './services';
 
 @Module({})
-export class RuckenAuthModule implements NestModule {
+export class AuthModule implements NestModule {
   static forFeature(options?: { providers: Provider[] }): DynamicModule {
     const providers = options && options.providers ? options.providers : [];
     return {
-      module: RuckenAuthModule,
+      module: AuthModule,
       imports: [
         HttpModule,
-        RuckenCoreModule.forFeature(options),
+        CoreModule.forFeature(options),
         TypeOrmModule.forFeature([...AUTH_ENTITIES]),
       ],
       providers: [...providers, ...AUTH_SERVICES],
@@ -31,10 +31,10 @@ export class RuckenAuthModule implements NestModule {
   static forRoot(options?: { providers: Provider[] }): DynamicModule {
     const providers = options && options.providers ? options.providers : [];
     return {
-      module: RuckenAuthModule,
+      module: AuthModule,
       imports: [
         HttpModule,
-        RuckenCoreModule.forFeature(options),
+        CoreModule.forFeature(options),
         TypeOrmModule.forFeature([...AUTH_ENTITIES]),
       ],
       controllers: [...AUTH_CONTROLLERS],
