@@ -9,14 +9,15 @@ import {
   Req,
 } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
-import { CORE_CONFIG_TOKEN, ICoreConfig } from '@lib/core';
 import { plainToClass } from 'class-transformer';
 import { JsonWebTokenError } from 'jsonwebtoken';
+import { AUTH_CORE_TOKEN } from '../configs/core.config';
 import { FacebookSignInDto } from '../dto/facebook-signIn.dto';
 import { GooglePlusSignInDto } from '../dto/google-plus-signIn.dto';
 import { RedirectUriDto } from '../dto/redirect-uri.dto';
 import { TokenDto } from '../dto/token.dto';
 import { UserTokenDto } from '../dto/user-token.dto';
+import { IAuthCoreConfig } from '../interfaces/auth-core.interface';
 import { IJwtPayload } from '../interfaces/jwt-payload.interface';
 import { AuthService } from '../services/auth.service';
 import { TokenService } from '../services/token.service';
@@ -25,7 +26,7 @@ import { TokenService } from '../services/token.service';
 @Controller('/api/auth')
 export class AuthController {
   constructor(
-    @Inject(CORE_CONFIG_TOKEN) private readonly coreConfig: ICoreConfig,
+    @Inject(AUTH_CORE_TOKEN) private readonly coreConfig: IAuthCoreConfig,
     private readonly authService: AuthService,
     private readonly tokenService: TokenService,
   ) {}

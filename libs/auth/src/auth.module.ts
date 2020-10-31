@@ -12,9 +12,67 @@ import { authenticate } from 'passport';
 import { AUTH_CONTROLLERS } from './controllers';
 import { AUTH_ENTITIES } from './entities';
 import { AUTH_SERVICES } from './services';
+import {
+  FacebookOption,
+  GoogleOption,
+  JwtOption,
+} from './interfaces/auth-strategy-option';
+import { AUTH_APP_FILTERS } from './filters';
+import { AUTH_APP_GUARDS } from './guards';
+import { FACEBOOK_CONFIG_TOKEN } from './configs/facebook.config';
+import { GOOGLE_PLUS_CONFIG_TOKEN } from './configs/google-plus.config';
+import { JWT_CONFIG_TOKEN } from './configs/jwt.config';
+import { AUTH_CORE_TOKEN } from './configs/core.config';
+import { AuthCoreOption } from './interfaces/auth-core.option';
 
 @Module({})
 export class AuthModule implements NestModule {
+  static forRootAsync(
+    fbConf: FacebookOption,
+    ggConf: GoogleOption,
+    jwtConf: JwtOption,
+    authCoreConf: AuthCoreOption,
+  ): DynamicModule {
+    return {
+      module: AuthModule,
+      imports: [
+        HttpModule,
+        CoreModule.forFeature(),
+        TypeOrmModule.forFeature([...AUTH_ENTITIES]),
+        ...fbConf.imports,
+        ...ggConf.imports,
+        ...jwtConf.imports,
+      ],
+      controllers: [...AUTH_CONTROLLERS],
+      providers: [
+        {
+          provide: FACEBOOK_CONFIG_TOKEN,
+          useFactory: fbConf.useFactory,
+          inject: fbConf.inject,
+        },
+        {
+          provide: GOOGLE_PLUS_CONFIG_TOKEN,
+          useFactory: ggConf.useFactory,
+          inject: ggConf.inject,
+        },
+        {
+          provide: JWT_CONFIG_TOKEN,
+          useFactory: jwtConf.useFactory,
+          inject: jwtConf.inject,
+        },
+        {
+          provide: AUTH_CORE_TOKEN,
+          useFactory: jwtConf.useFactory,
+          inject: jwtConf.inject,
+        },
+        ...AUTH_SERVICES,
+        ...AUTH_APP_GUARDS,
+        ...AUTH_APP_FILTERS,
+      ],
+      exports: [...AUTH_SERVICES],
+    };
+  }
+
   static forFeature(options?: { providers: Provider[] }): DynamicModule {
     const providers = options && options.providers ? options.providers : [];
     return {
@@ -24,7 +82,12 @@ export class AuthModule implements NestModule {
         CoreModule.forFeature(options),
         TypeOrmModule.forFeature([...AUTH_ENTITIES]),
       ],
-      providers: [...providers, ...AUTH_SERVICES],
+      providers: [
+        ...providers,
+        ...AUTH_SERVICES,
+        ...AUTH_APP_GUARDS,
+        ...AUTH_APP_FILTERS,
+      ],
       exports: [...AUTH_SERVICES],
     };
   }
@@ -38,7 +101,12 @@ export class AuthModule implements NestModule {
         TypeOrmModule.forFeature([...AUTH_ENTITIES]),
       ],
       controllers: [...AUTH_CONTROLLERS],
-      providers: [...providers, ...AUTH_SERVICES],
+      providers: [
+        ...providers,
+        ...AUTH_SERVICES,
+        ...AUTH_APP_GUARDS,
+        ...AUTH_APP_FILTERS,
+      ],
       exports: [...AUTH_SERVICES],
     };
   }

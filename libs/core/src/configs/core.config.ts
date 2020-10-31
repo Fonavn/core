@@ -2,7 +2,7 @@ import { ICoreConfig } from '../interfaces/core-config.interface';
 
 export const DEFAULT_CORE_CONFIG: ICoreConfig = {
   demo: false,
-  port: 5000,
+  port: 3000,
   protocol: 'http',
   domain: 'localhost',
 };

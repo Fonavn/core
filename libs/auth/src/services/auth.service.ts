@@ -5,14 +5,7 @@ import {
   Injectable,
   Logger,
 } from '@nestjs/common';
-import {
-  CustomError,
-  GroupsService,
-  User,
-  UsersService,
-  ICoreConfig,
-  CORE_CONFIG_TOKEN,
-} from '@lib/core';
+import { CustomError, GroupsService, User, UsersService } from '@lib/core';
 import { plainToClass } from 'class-transformer';
 import { stringify } from 'querystring';
 import { map } from 'rxjs/operators';
@@ -23,12 +16,14 @@ import { SignInDto } from '../dto/sign-in.dto';
 import { SignUpDto } from '../dto/sign-up.dto';
 import { IFacebookConfig } from '../interfaces/facebook-config.interface';
 import { IGooglePlusConfig } from '../interfaces/google-plus-config.interface';
+import { AUTH_CORE_TOKEN } from '../configs/core.config';
+import { IAuthCoreConfig } from '../interfaces/auth-core.interface';
 @Injectable()
 export class AuthService {
   private localUri: string;
 
   constructor(
-    @Inject(CORE_CONFIG_TOKEN) private readonly coreConfig: ICoreConfig,
+    @Inject(AUTH_CORE_TOKEN) private readonly coreConfig: IAuthCoreConfig,
     @Inject(FACEBOOK_CONFIG_TOKEN) private readonly fbConfig: IFacebookConfig,
     @Inject(GOOGLE_PLUS_CONFIG_TOKEN)
     private readonly googlePlusConfig: IGooglePlusConfig,
