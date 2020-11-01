@@ -10,7 +10,8 @@
    "entities": [
       "apps/fona/src/**/*.entity.ts",
       "libs/core/src/**/*.entity.ts",
-      "libs/auth/src/**/*.entity.ts"
+      "libs/auth/src/**/*.entity.ts",
+      "libs/tenant/src/**/*.entity.ts"
    ],
    "migrations": [
       "migrations/**/*.ts",

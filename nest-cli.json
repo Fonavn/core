@@ -46,6 +46,24 @@
       "compilerOptions": {
         "tsConfigPath": "apps/nestjs-crud/tsconfig.app.json"
       }
+    },
+    "tenant": {
+      "type": "library",
+      "root": "libs/tenant",
+      "entryFile": "index",
+      "sourceRoot": "libs/tenant/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/tenant/tsconfig.lib.json"
+      }
+    },
+    "shared": {
+      "type": "library",
+      "root": "libs/shared",
+      "entryFile": "index",
+      "sourceRoot": "libs/shared/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/shared/tsconfig.lib.json"
+      }
     }
   },
   "compilerOptions": {
