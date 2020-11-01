@@ -26,6 +26,7 @@ import { AUTH_CORE_TOKEN } from './configs/core.config';
 import { AuthCoreOption } from './interfaces/auth-core.option';
 import { LocalStrategySignUp } from './passport/local.strategy';
 import { AUTH_PASSPORT_STRATEGIES } from './passport';
+import { TenantModule } from '@lib/tenant';
 
 @Module({})
 export class AuthModule implements NestModule {
@@ -44,6 +45,7 @@ export class AuthModule implements NestModule {
         ...fbConf.imports,
         ...ggConf.imports,
         ...jwtConf.imports,
+        TenantModule,
       ],
       controllers: [...AUTH_CONTROLLERS],
       providers: [
@@ -84,12 +86,14 @@ export class AuthModule implements NestModule {
         HttpModule,
         CoreModule.forFeature(options),
         TypeOrmModule.forFeature([...AUTH_ENTITIES]),
+        TenantModule,
       ],
       providers: [
         ...providers,
         ...AUTH_SERVICES,
         ...AUTH_APP_GUARDS,
         ...AUTH_APP_FILTERS,
+        ...AUTH_PASSPORT_STRATEGIES,
       ],
       exports: [...AUTH_SERVICES],
     };
@@ -102,6 +106,7 @@ export class AuthModule implements NestModule {
         HttpModule,
         CoreModule.forFeature(options),
         TypeOrmModule.forFeature([...AUTH_ENTITIES]),
+        TenantModule,
       ],
       controllers: [...AUTH_CONTROLLERS],
       providers: [

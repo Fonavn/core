@@ -1,14 +1,17 @@
-import { Injectable } from '@nestjs/common';
+import { TENANT_CONNECTION } from '@lib/tenant/const';
+import { TenantService } from '@lib/tenant/tenant-service.decorator';
+import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Connection, Repository } from 'typeorm';
 import { Permission } from '../entities/permission.entity';
 
-@Injectable()
+@TenantService()
 export class PermissionsService {
-  constructor(
-    @InjectRepository(Permission)
-    private readonly repository: Repository<Permission>,
-  ) {}
+  private readonly repository: Repository<Permission>;
+
+  constructor(@Inject(TENANT_CONNECTION) private connection: Connection) {
+    this.repository = this.connection.getRepository(Permission);
+  }
 
   async create(options: { item: Permission }) {
     try {

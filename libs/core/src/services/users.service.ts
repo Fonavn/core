@@ -1,17 +1,33 @@
+import { TENANT_CONNECTION } from '@lib/tenant/const';
+import { TenantService } from '@lib/tenant/tenant-service.decorator';
 import {
   ConflictException,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { ContextIdFactory, ModuleRef, REQUEST } from '@nestjs/core';
+import { Connection } from 'typeorm';
 import { User } from '../entities/user.entity';
+import { Request } from 'express';
 
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectRepository(User) private readonly repository: Repository<User>,
+    private moduleRef: ModuleRef,
+    @Inject(REQUEST) private request: Request,
   ) {}
+
+  async repository() {
+    const contextId = ContextIdFactory.getByRequest(this.request);
+    this.moduleRef.registerRequestByContextId(this.request, contextId);
+    const connection: Connection = await this.moduleRef.resolve(
+      TENANT_CONNECTION,
+      contextId,
+      { strict: false },
+    );
+    return connection.getRepository(User);
+  }
 
   async assertUsernameAndEmail(options: {
     id?: number;
@@ -53,7 +69,7 @@ export class UsersService {
         email: options.item.email,
         username: options.item.username,
       });
-      options.item = await this.repository.save(options.item);
+      options.item = await (await this.repository()).save(options.item);
       const { user } = await this.findById({ id: options.item.id });
       return { user };
     } catch (error) {
@@ -70,7 +86,7 @@ export class UsersService {
       });
       options.item.lastLogin = new Date();
       options.item.id = options.id;
-      options.item = await this.repository.save(options.item);
+      options.item = await (await this.repository()).save(options.item);
       const { user } = await this.findById({ id: options.item.id });
       return { user };
     } catch (error) {
@@ -80,10 +96,10 @@ export class UsersService {
 
   async delete(options: { id: number }) {
     try {
-      let object = await this.repository.findOneOrFail(options.id);
+      let object = await (await this.repository()).findOneOrFail(options.id);
       object.groups = [];
-      object = await this.repository.save(object);
-      await this.repository.delete(options.id);
+      object = await (await this.repository()).save(object);
+      await (await this.repository()).delete(options.id);
       return { user: null };
     } catch (error) {
       throw error;
@@ -92,7 +108,7 @@ export class UsersService {
 
   async findById(options: { id: number }) {
     try {
-      const item = await this.repository.findOneOrFail(options.id, {
+      const item = await (await this.repository()).findOneOrFail(options.id, {
         relations: ['groups', 'groups.permissions'],
       });
       return { user: item };
@@ -109,7 +125,7 @@ export class UsersService {
     sort?: string;
   }) {
     try {
-      let qb = this.repository.createQueryBuilder('user');
+      let qb = (await this.repository()).createQueryBuilder('user');
       if (options.group) {
         qb = qb
           .leftJoinAndSelect('user.groups', 'group')
@@ -163,7 +179,7 @@ export class UsersService {
 
   async findByEmail(options: { email: string }) {
     try {
-      const item = await this.repository.findOneOrFail({
+      const item = await (await this.repository()).findOneOrFail({
         where: {
           email: options.email,
         },
@@ -181,7 +197,7 @@ export class UsersService {
 
   async findByUserName(options: { username: string }) {
     try {
-      const item = await this.repository.findOneOrFail({
+      const item = await (await this.repository()).findOneOrFail({
         where: {
           username: options.username,
         },

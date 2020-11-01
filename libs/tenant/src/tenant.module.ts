@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  DynamicModule,
   MiddlewareConsumer,
   Module,
   Scope,
@@ -10,7 +11,6 @@ import { TENANT_CONNECTION, TENANT_ID_HEADER } from './const';
 import { DatabaseModule } from './database/database.module';
 import { TenantEntity } from './tenant.entity';
 import { Connection, createConnection, getConnection } from 'typeorm';
-import { TodoEntity } from 'apps/fona/src/todo/todo.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([TenantEntity]), DatabaseModule],
@@ -32,6 +32,15 @@ import { TodoEntity } from 'apps/fona/src/todo/todo.entity';
 })
 export class TenantModule {
   constructor(private readonly connection: Connection) {}
+  static entities: any[];
+
+  static forRoot(entities: any): DynamicModule {
+    TenantModule.entities = entities;
+
+    return {
+      module: TenantModule,
+    };
+  }
 
   configure(consumer: MiddlewareConsumer): void {
     consumer
@@ -72,8 +81,7 @@ export class TenantModule {
             username: database.username,
             password: database.password,
             database: database.database,
-            // TODO inject
-            entities: [TodoEntity],
+            entities: [...TenantModule.entities],
             synchronize: true,
           });
 

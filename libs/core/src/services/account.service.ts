@@ -1,9 +1,10 @@
+import { TenantService } from '@lib/tenant/tenant-service.decorator';
 import { Injectable } from '@nestjs/common';
 import { plainToClassFromExist } from 'class-transformer';
 import { User } from '../entities/user.entity';
 import { UsersService } from './users.service';
 
-@Injectable()
+@TenantService()
 export class AccountService {
   constructor(private readonly usersService: UsersService) {}
 

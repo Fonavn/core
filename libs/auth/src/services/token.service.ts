@@ -4,8 +4,9 @@ import { decode, sign, verify } from 'jsonwebtoken';
 import { JWT_CONFIG_TOKEN } from '../configs/jwt.config';
 import { IJwtConfig } from '../interfaces/jwt-config.interface';
 import { IJwtPayload } from '../interfaces/jwt-payload.interface';
+import { TenantService } from '@lib/tenant/tenant-service.decorator';
 
-@Injectable()
+@TenantService()
 export class TokenService {
   constructor(
     @Inject(JWT_CONFIG_TOKEN) private readonly jwtConfig: IJwtConfig,
