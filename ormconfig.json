@@ -7,12 +7,18 @@
    "database": "nestjs-query",
    "synchronize": false,
    "logging": false,
-   "entities": ["dist/**/*.entity.js"],
+   "entities": [
+      "apps/fona/src/**/*.entity.ts",
+      "libs/core/src/**/*.entity.ts",
+      "libs/auth/src/**/*.entity.ts"
+   ],
    "migrations": [
-      "src/migration/**/*.ts"
+      "migrations/**/*.ts",
+      "libs/auth/src/migrations/**/*.ts",
+      "libs/core/src/migrations/**/*.ts"
    ],
    "subscribers": [
-      "src/subscriber/**/*.ts"
+      "apps/fona/src/subscriber/**/*.ts"
    ],
    "cli": {
       "migrationsDir": "migrations"
