@@ -1,4 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
+import { ModuleRef } from '@nestjs/core';
 import { plainToClass } from 'class-transformer';
 import { use } from 'passport';
 import * as FacebookTokenStrategy from 'passport-facebook-token';
@@ -9,12 +10,15 @@ import { IFacebookConfig } from '../interfaces/facebook-config.interface';
 import { AuthService } from '../services/auth.service';
 import { OauthTokensAccesstokensService } from '../services/oauth-tokens-accesstokens.service';
 
+// TODO because cannot test yet
 @Injectable()
 export class FacebookStrategy {
+  private readonly oauthTokensAccesstokensService: OauthTokensAccesstokensService;
+  private readonly authService: AuthService;
+
   constructor(
     @Inject(FACEBOOK_CONFIG_TOKEN) private readonly fbConfig: IFacebookConfig,
-    private readonly oauthTokensAccesstokensService: OauthTokensAccesstokensService,
-    private readonly authService: AuthService,
+    private moduleRef: ModuleRef,
   ) {
     this.init();
   }
@@ -26,8 +30,10 @@ export class FacebookStrategy {
         {
           clientID: this.fbConfig.client_id,
           clientSecret: this.fbConfig.client_secret,
+          // _passReqToCallback: true
         },
         async (
+          // req,
           accessToken: string,
           refreshToken: string,
           profile: any,
