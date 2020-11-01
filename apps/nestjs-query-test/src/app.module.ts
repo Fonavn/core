@@ -11,10 +11,12 @@ import masterDatabase from './config/master-database';
 import loggerOptions from './config/logger';
 import { WinstonModule } from 'nest-winston';
 import { RequestTimeMiddleware } from './common/middlewares/request-time.middleware';
+import { join } from 'path';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
+      envFilePath: join('./apps/fona/.env'),
       load: [masterDatabase, loggerOptions],
     }),
     WinstonModule.forRootAsync({
