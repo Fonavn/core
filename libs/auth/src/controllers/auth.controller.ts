@@ -5,16 +5,20 @@ import {
   HttpCode,
   HttpStatus,
   Inject,
+  Logger,
   Post,
   Req,
 } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { plainToClass } from 'class-transformer';
 import { JsonWebTokenError } from 'jsonwebtoken';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { AUTH_CORE_TOKEN } from '../configs/core.config';
 import { FacebookSignInDto } from '../dto/facebook-signIn.dto';
 import { GooglePlusSignInDto } from '../dto/google-plus-signIn.dto';
 import { RedirectUriDto } from '../dto/redirect-uri.dto';
+import { SignInDto } from '../dto/sign-in.dto';
+import { SignUpDto } from '../dto/sign-up.dto';
 import { TokenDto } from '../dto/token.dto';
 import { UserTokenDto } from '../dto/user-token.dto';
 import { IAuthCoreConfig } from '../interfaces/auth-core.interface';
@@ -29,7 +33,10 @@ export class AuthController {
     @Inject(AUTH_CORE_TOKEN) private readonly coreConfig: IAuthCoreConfig,
     private readonly authService: AuthService,
     private readonly tokenService: TokenService,
-  ) {}
+    @Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly logger: Logger,
+  ) {
+    this.logger.setContext(AuthController.name);
+  }
 
   @HttpCode(HttpStatus.OK)
   @Post('signin')
@@ -41,7 +48,7 @@ export class AuthController {
   })
   async requestJsonWebTokenAfterSignIn(
     @Req() req,
-    // @Body() signInDto: SignInDto,
+    @Body() _signInDto: SignInDto,
   ): Promise<UserTokenDto> {
     const token = await this.tokenService.create(req.user);
     return plainToClass(UserTokenDto, { user: req.user, token });
@@ -57,7 +64,7 @@ export class AuthController {
   })
   async requestJsonWebTokenAfterSignUp(
     @Req() req,
-    // @Body() signUpDto: SignUpDto,
+    @Body() _signUpDto: SignUpDto,
   ): Promise<UserTokenDto> {
     const token = await this.tokenService.create(req.user);
     return plainToClass(UserTokenDto, { user: req.user, token });

@@ -25,7 +25,7 @@ export default (): IConfig => ({
   auth: {
     jwtConf: {
       ...DEFAULT_JWT_CONFIG,
-      authHeaderPrefix: process.env.JWT_AUTH_HEADER_PREFIX || 'JWT',
+      authHeaderPrefix: process.env.JWT_AUTH_HEADER_PREFIX || 'Bearer',
       expirationDelta: process.env.JWT_EXPIRATION_DELTA || '7 days',
       secretKey: process.env.JWT_SECRET_KEY || 'secret_key',
     },

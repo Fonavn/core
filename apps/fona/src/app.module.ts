@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from '@lib/auth';
@@ -9,12 +9,21 @@ import { PassportModule } from '@nestjs/passport';
 import { CoreModule } from '@lib/core';
 import authCore from './config/auth-core';
 import { join } from 'path';
+import { WinstonModule } from 'nest-winston';
+import { RequestTimeMiddleware } from './common/middlewares/request-time.middleware';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       envFilePath: join('./apps/fona/.env'),
       load: [masterDatabase, authCore],
+    }),
+    WinstonModule.forRootAsync({
+      imports: [ConfigModule],
+      useFactory: (config: ConfigService) => {
+        return config.get('winston');
+      },
+      inject: [ConfigService],
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
@@ -65,4 +74,8 @@ import { join } from 'path';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer): void {
+    consumer.apply(RequestTimeMiddleware).forRoutes('*');
+  }
+}

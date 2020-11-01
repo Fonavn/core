@@ -13,7 +13,9 @@
       "libs/auth/src/**/*.entity.ts"
    ],
    "migrations": [
-      "migrations/**/*.ts"
+      "migrations/**/*.ts",
+      "libs/auth/src/migrations/**/*.ts",
+      "libs/core/src/migrations/**/*.ts"
    ],
    "subscribers": [
       "apps/fona/src/subscriber/**/*.ts"

@@ -24,6 +24,8 @@ import { GOOGLE_PLUS_CONFIG_TOKEN } from './configs/google-plus.config';
 import { JWT_CONFIG_TOKEN } from './configs/jwt.config';
 import { AUTH_CORE_TOKEN } from './configs/core.config';
 import { AuthCoreOption } from './interfaces/auth-core.option';
+import { LocalStrategySignUp } from './passport/local.strategy';
+import { AUTH_PASSPORT_STRATEGIES } from './passport';
 
 @Module({})
 export class AuthModule implements NestModule {
@@ -68,6 +70,7 @@ export class AuthModule implements NestModule {
         ...AUTH_SERVICES,
         ...AUTH_APP_GUARDS,
         ...AUTH_APP_FILTERS,
+        ...AUTH_PASSPORT_STRATEGIES,
       ],
       exports: [...AUTH_SERVICES],
     };
@@ -106,6 +109,7 @@ export class AuthModule implements NestModule {
         ...AUTH_SERVICES,
         ...AUTH_APP_GUARDS,
         ...AUTH_APP_FILTERS,
+        ...AUTH_PASSPORT_STRATEGIES,
       ],
       exports: [...AUTH_SERVICES],
     };
