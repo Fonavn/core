@@ -1,8 +1,8 @@
-import { DatabaseEntity } from '@lib/tenant/database/database.entity';
-import { TenantEntity } from '@lib/tenant/tenant.entity';
+import { MASTER_TNID } from '@lib/tenant/const';
 import { ConnectionOptions } from 'typeorm';
 export default () => ({
   database: {
+    name: 'default',
     type: process.env.DB_TYPE,
     host: process.env.DB_HOST,
     port: parseInt(process.env.DB_PORT, 10),

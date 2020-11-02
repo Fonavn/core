@@ -1,32 +1,42 @@
 import {
   BadRequestException,
   DynamicModule,
+  forwardRef,
+  HttpException,
   MiddlewareConsumer,
   Module,
   Scope,
 } from '@nestjs/common';
 import { REQUEST } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { TENANT_CONNECTION, TENANT_ID_HEADER } from './const';
+import { MASTER_TNID, TENANT_CONNECTION, TENANT_ID_HEADER } from './const';
 import { DatabaseModule } from './database/database.module';
 import { TenantEntity } from './tenant.entity';
 import { Connection, createConnection, getConnection } from 'typeorm';
 import { TenantController } from './tenant.controller';
 import { TenantServicez } from './tenant.service';
+import { Response } from 'express';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([TenantEntity]), DatabaseModule],
+  imports: [
+    TypeOrmModule.forFeature([TenantEntity]),
+    forwardRef(() => DatabaseModule),
+  ],
   providers: [
     {
       provide: TENANT_CONNECTION,
       inject: [REQUEST, Connection],
       scope: Scope.REQUEST,
       useFactory: async (request, connection) => {
-        const tenant: TenantEntity = await connection
-          .getRepository(TenantEntity)
-          .findOne({ where: { path: request.headers[TENANT_ID_HEADER] } });
+        if (request.headers[TENANT_ID_HEADER] === MASTER_TNID) {
+          return getConnection('default');
+        } else {
+          const tenant: TenantEntity = await connection
+            .getRepository(TenantEntity)
+            .findOne({ where: { path: request.headers[TENANT_ID_HEADER] } });
 
-        return getConnection(tenant.path);
+          return getConnection(tenant.path);
+        }
       },
     },
   ],
@@ -49,6 +59,9 @@ export class TenantModule {
           inject: [REQUEST, Connection],
           scope: Scope.REQUEST,
           useFactory: async (request, connection) => {
+            if (request.headers[TENANT_ID_HEADER] === MASTER_TNID) {
+              return getConnection('default');
+            }
             const tenant: TenantEntity = await connection
               .getRepository(TenantEntity)
               .findOne({ where: { path: request.headers[TENANT_ID_HEADER] } });
@@ -64,6 +77,14 @@ export class TenantModule {
 
   configure(consumer: MiddlewareConsumer): void {
     consumer
+      .apply(async (req, res: Response, next) => {
+        if (req.headers[TENANT_ID_HEADER] !== MASTER_TNID) {
+          res.send(404);
+        } else {
+          next();
+        }
+      })
+      .forRoutes('api/admin/(.*)')
       .apply(async (req, res, next) => {
         const tenant: TenantEntity = await this.connection
           // TODO for future use host now use tenantId
@@ -115,6 +136,7 @@ export class TenantModule {
           }
         }
       })
-      .forRoutes('api');
+      .exclude('api/admin/(.*)')
+      .forRoutes('api/(.*)');
   }
 }

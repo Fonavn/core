@@ -15,22 +15,31 @@ export class AccessGuard extends AuthGuard('jwt') {
     } catch (error) {
       Logger.error('Error in canActivate', error.message, AccessGuard.name);
     }
-    // TODO return 404 when access superuser route
-    const roles = this.reflector.get<string[]>('roles', context.getHandler());
-    const permissions = this.reflector.get<string[]>(
-      'permissions',
-      context.getHandler(),
-    );
+    // TODO check if and or or for class and hander
+    const roles = [
+      ...(this.reflector.get<string[]>('roles', context.getHandler()) || []),
+      ...(this.reflector.get<string[]>('roles', context.getClass()) || []),
+    ];
+    const permissions = [
+      ...(this.reflector.get<string[]>('permissions', context.getHandler()) ||
+        []),
+      ...(this.reflector.get<string[]>('permissions', context.getClass()) ||
+        []),
+    ];
     const request = context.switchToHttp().getRequest();
     const user: User = request.user;
     // Logger.log(JSON.stringify(user), AccessGuard.name);
-    const hasRole = roles
-      ? roles.filter(roleName => user && user instanceof User && user[roleName])
-          .length > 0
-      : null;
-    const hasPermission = permissions
-      ? user && user instanceof User && user.checkPermissions(permissions)
-      : null;
+    const hasRole =
+      roles.length > 0
+        ? roles.filter(
+            roleName => user && user instanceof User && user[roleName],
+          ).length > 0
+        : null;
+    const hasPermission =
+      permissions.length > 0
+        ? user && user instanceof User && user.checkPermissions(permissions)
+        : null;
+
     return (
       hasRole === true ||
       hasPermission === true ||
