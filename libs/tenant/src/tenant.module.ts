@@ -11,6 +11,8 @@ import { TENANT_CONNECTION, TENANT_ID_HEADER } from './const';
 import { DatabaseModule } from './database/database.module';
 import { TenantEntity } from './tenant.entity';
 import { Connection, createConnection, getConnection } from 'typeorm';
+import { TenantController } from './tenant.controller';
+import { TenantServicez } from './tenant.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([TenantEntity]), DatabaseModule],
@@ -39,6 +41,24 @@ export class TenantModule {
 
     return {
       module: TenantModule,
+      providers: [
+        TenantController,
+        TenantServicez,
+        {
+          provide: TENANT_CONNECTION,
+          inject: [REQUEST, Connection],
+          scope: Scope.REQUEST,
+          useFactory: async (request, connection) => {
+            const tenant: TenantEntity = await connection
+              .getRepository(TenantEntity)
+              .findOne({ where: { path: request.headers[TENANT_ID_HEADER] } });
+
+            return getConnection(tenant.path);
+          },
+        },
+      ],
+      exports: [TENANT_CONNECTION],
+      controllers: [TenantController],
     };
   }
 
