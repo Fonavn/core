@@ -15,6 +15,7 @@ export class AccessGuard extends AuthGuard('jwt') {
     } catch (error) {
       Logger.error('Error in canActivate', error.message, AccessGuard.name);
     }
+    // TODO return 404 when access superuser route
     const roles = this.reflector.get<string[]>('roles', context.getHandler());
     const permissions = this.reflector.get<string[]>(
       'permissions',
