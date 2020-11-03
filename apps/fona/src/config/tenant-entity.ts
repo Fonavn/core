@@ -7,13 +7,13 @@ import { registerAs } from '@nestjs/config';
 
 const entities = [
   // auth
-  OauthTokensAccesstoken,
+  // OauthTokensAccesstoken,
 
   // core
-  ContentType,
-  Group,
-  Permission,
-  User,
+  // ContentType,
+  // Group,
+  // Permission,
+  // User,
 
   // fona
   TodoEntity,
