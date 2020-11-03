@@ -19,7 +19,7 @@ import { TenantServicez } from './tenant.service';
     type: TenantEntity,
   },
 })
-@Controller('/api/admin/tenant')
+@Controller('/admin/tenant')
 export class TenantController implements CrudController<TenantEntity> {
   constructor(public service: TenantServicez) {}
 }

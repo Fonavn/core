@@ -34,7 +34,7 @@ import { PermissionsService } from '../services/permissions.service';
 
 @ApiTags('permissions')
 @ApiBearerAuth()
-@Controller('/api/permissions')
+@Controller('/admin/permissions')
 export class PermissionsController {
   constructor(
     @Inject(CORE_CONFIG_TOKEN) private readonly coreConfig: ICoreConfig,

@@ -77,14 +77,24 @@ export class TenantModule {
 
   configure(consumer: MiddlewareConsumer): void {
     consumer
-      .apply(async (req, res: Response, next) => {
-        if (req.headers[TENANT_ID_HEADER] !== MASTER_TNID) {
-          res.send(404);
-        } else {
-          next();
-        }
-      })
-      .forRoutes('api/admin/(.*)')
+      // .apply(async (req, res: Response, next) => {
+      /**
+       * Depend on strategy we have two options
+       *  (1) Users are in master
+       *  (2) Users are in tenant DB
+       *
+       * For now we implement (1) for simplify
+       */
+      // next();
+
+      // No need any more
+      // if (req.headers[TENANT_ID_HEADER] !== MASTER_TNID) {
+      //   res.send(404);
+      // } else {
+      //   next();
+      // }
+      // })
+      // .forRoutes('api/admin/(.*)')
       .apply(async (req, res, next) => {
         const tenant: TenantEntity = await this.connection
           // TODO for future use host now use tenantId

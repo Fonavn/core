@@ -13,7 +13,7 @@ import { DatabaseService } from './database.service';
     type: DatabaseEntity,
   },
 })
-@Controller('/api/admin/database')
+@Controller('/admin/database')
 export class DatabaseController implements CrudController<DatabaseEntity> {
   constructor(public service: DatabaseService) {}
 }
