@@ -10,7 +10,7 @@ import { TodoService } from './todo.service';
     type: TodoEntity,
   },
 })
-@Controller('/api/todo')
+@Controller('/todo')
 export class TodoController implements CrudController<TodoEntity> {
   constructor(public service: TodoService) {}
 }
