@@ -99,6 +99,7 @@ export class User {
     }
   }
 
+  // TODO add salt
   async createPassword(password: string) {
     const h = new hashers.PBKDF2PasswordHasher();
     const hash = await h.encode(password, h.salt());
