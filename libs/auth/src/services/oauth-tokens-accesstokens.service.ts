@@ -1,14 +1,16 @@
+import { TENANT_CONNECTION } from '@lib/tenant/const';
+import { TenantService } from '@lib/tenant/tenant-service.decorator';
 import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Connection, Repository } from 'typeorm';
 import { OauthTokensAccesstoken } from '../entities/oauth-tokens-accesstoken.entity';
 
-@Injectable()
+@TenantService()
 export class OauthTokensAccesstokensService {
-  constructor(
-    @InjectRepository(OauthTokensAccesstoken)
-    private readonly repository: Repository<OauthTokensAccesstoken>,
-  ) {}
+  private readonly repository: Repository<OauthTokensAccesstoken>;
+  constructor(@Inject(TENANT_CONNECTION) private connection: Connection) {
+    this.repository = this.connection.getRepository(OauthTokensAccesstoken);
+  }
 
   async create(options: { item: OauthTokensAccesstoken }) {
     try {

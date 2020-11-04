@@ -19,7 +19,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./apps/nestjs-query-test/test/jest-e2e.json",
-    "typeorm": "ts-node --require tsconfig-paths/register ./node_modules/.bin/typeorm"   
+    "typeorm": "ts-node --require tsconfig-paths/register ./node_modules/.bin/typeorm"
   },
   "dependencies": {
     "@nestjs-query/query-graphql": "^0.21.0",
@@ -107,7 +107,11 @@
       "@lib/auth/(.*)": "<rootDir>/libs/auth/src/$1",
       "@lib/auth": "<rootDir>/libs/auth/src",
       "@lib/core/(.*)": "<rootDir>/libs/core/src/$1",
-      "@lib/core": "<rootDir>/libs/core/src"
+      "@lib/core": "<rootDir>/libs/core/src",
+      "@lib/tenant/(.*)": "<rootDir>/libs/tenant/src/$1",
+      "@lib/tenant": "<rootDir>/libs/tenant/src",
+      "@lib/shared/(.*)": "<rootDir>/libs/shared/src/$1",
+      "@lib/shared": "<rootDir>/libs/shared/src"
     }
   },
   "husky": {

@@ -23,6 +23,18 @@
       ],
       "@lib/core/*": [
         "libs/core/src/*"
+      ],
+      "@lib/tenant": [
+        "libs/tenant/src"
+      ],
+      "@lib/tenant/*": [
+        "libs/tenant/src/*"
+      ],
+      "@lib/shared": [
+        "libs/shared/src"
+      ],
+      "@lib/shared/*": [
+        "libs/shared/src/*"
       ]
     }
   }

@@ -2,7 +2,6 @@ import {
   BadRequestException,
   HttpService,
   Inject,
-  Injectable,
   Logger,
 } from '@nestjs/common';
 import { CustomError, GroupsService, User, UsersService } from '@lib/core';
@@ -18,18 +17,22 @@ import { IFacebookConfig } from '../interfaces/facebook-config.interface';
 import { IGooglePlusConfig } from '../interfaces/google-plus-config.interface';
 import { AUTH_CORE_TOKEN } from '../configs/core.config';
 import { IAuthCoreConfig } from '../interfaces/auth-core.interface';
-@Injectable()
+import { TenantService } from '@lib/tenant/tenant-service.decorator';
+import { ContextIdFactory, ModuleRef, REQUEST } from '@nestjs/core';
+import { Request } from 'express';
+
+@TenantService()
 export class AuthService {
   private localUri: string;
 
   constructor(
+    private moduleRef: ModuleRef,
     @Inject(AUTH_CORE_TOKEN) private readonly coreConfig: IAuthCoreConfig,
     @Inject(FACEBOOK_CONFIG_TOKEN) private readonly fbConfig: IFacebookConfig,
     @Inject(GOOGLE_PLUS_CONFIG_TOKEN)
     private readonly googlePlusConfig: IGooglePlusConfig,
     private readonly httpService: HttpService,
-    private readonly usersService: UsersService,
-    private readonly groupsService: GroupsService,
+    @Inject(REQUEST) private request: Request,
   ) {
     if (this.coreConfig.port) {
       this.localUri = `http://${this.coreConfig.domain}:${this.coreConfig.port}`;
@@ -38,9 +41,21 @@ export class AuthService {
     }
   }
 
+  get usersService() {
+    const contextId = ContextIdFactory.getByRequest(this.request);
+    this.moduleRef.registerRequestByContextId(this.request, contextId);
+    return this.moduleRef.resolve(UsersService, contextId, { strict: false });
+  }
+
+  get groupsService() {
+    const contextId = ContextIdFactory.getByRequest(this.request);
+    this.moduleRef.registerRequestByContextId(this.request, contextId);
+    return this.moduleRef.resolve(GroupsService, contextId, { strict: false });
+  }
+
   async info(options: { id: number }) {
     try {
-      return await this.usersService.findById(options);
+      return await (await this.usersService).findById(options);
     } catch (error) {
       throw error;
     }
@@ -48,11 +63,14 @@ export class AuthService {
 
   async signIn(options: SignInDto) {
     try {
-      const { user } = await this.usersService.findByEmail(options);
+      const { user } = await (await this.usersService).findByEmail(options);
       if (!(await user.validatePassword(options.password))) {
         throw new CustomError('Wrong password');
       }
-      return await this.usersService.update({ id: user.id, item: user });
+      return await (await this.usersService).update({
+        id: user.id,
+        item: user,
+      });
     } catch (error) {
       throw error;
     }
@@ -60,24 +78,24 @@ export class AuthService {
 
   async signUp(options: SignUpDto) {
     try {
-      await this.groupsService.preloadAll();
+      await (await this.groupsService).preloadAll();
     } catch (error) {
       throw new BadRequestException('Error in load groups');
     }
     try {
-      await this.usersService.assertUsernameAndEmail({
+      await (await this.usersService).assertUsernameAndEmail({
         email: options.email,
         username: options.username,
       });
     } catch (error) {
       throw error;
     }
-    const group = this.groupsService.getGroupByName({ name: 'user' });
+    const group = (await this.groupsService).getGroupByName({ name: 'user' });
     const newUser = await plainToClass(User, options).setPassword(
       options.password,
     );
     newUser.groups = [group];
-    return this.usersService.create({ item: newUser });
+    return (await this.usersService).create({ item: newUser });
   }
 
   async requestFacebookRedirectUri(host?: string): Promise<RedirectUriDto> {

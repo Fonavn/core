@@ -11,6 +11,9 @@ import authCore from './config/auth-core';
 import { join } from 'path';
 import { WinstonModule } from 'nest-winston';
 import { RequestTimeMiddleware } from './common/middlewares/request-time.middleware';
+import { TodoModule } from './todo/todo.module';
+import { TenantModule } from '@lib/tenant';
+import entities from './config/tenant-entity';
 
 @Module({
   imports: [
@@ -70,6 +73,8 @@ import { RequestTimeMiddleware } from './common/middlewares/request-time.middlew
         inject: [ConfigService],
       },
     ),
+    TenantModule.forRoot(entities),
+    TodoModule,
   ],
   controllers: [AppController],
   providers: [AppService],

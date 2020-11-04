@@ -35,7 +35,7 @@ import { UsersService } from '../services/users.service';
 
 @ApiTags('users')
 @ApiBearerAuth()
-@Controller('/api/users')
+@Controller('/admin/users')
 export class UsersController {
   constructor(
     @Inject(CORE_CONFIG_TOKEN) private readonly coreConfig: ICoreConfig,

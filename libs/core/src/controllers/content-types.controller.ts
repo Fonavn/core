@@ -34,7 +34,7 @@ import { ContentTypesService } from '../services/content-types.service';
 
 @ApiTags('content-types')
 @ApiBearerAuth()
-@Controller('/api/content_types')
+@Controller('/admin/content_types')
 export class ContentTypesController {
   constructor(
     @Inject(CORE_CONFIG_TOKEN) private readonly coreConfig: ICoreConfig,

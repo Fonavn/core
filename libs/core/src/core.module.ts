@@ -1,3 +1,4 @@
+import { TenantModule } from '@lib/tenant';
 import { DynamicModule, Module, Provider } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CORE_CONFIG_TOKEN } from './configs/core.config';
@@ -9,6 +10,7 @@ import { CORE_APP_PIPES } from './pipes';
 import { CORE_SERVICES } from './services';
 
 @Module({
+  imports: [TenantModule],
   exports: [...CORE_SERVICES],
 })
 export class CoreModule {

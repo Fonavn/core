@@ -34,7 +34,7 @@ import { GroupsService } from '../services/groups.service';
 
 @ApiTags('groups')
 @ApiBearerAuth()
-@Controller('/api/groups')
+@Controller('/admin/groups')
 export class GroupsController {
   constructor(
     @Inject(CORE_CONFIG_TOKEN) private readonly coreConfig: ICoreConfig,

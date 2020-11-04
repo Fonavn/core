@@ -1,14 +1,17 @@
-import { Injectable } from '@nestjs/common';
+import { TENANT_CONNECTION } from '@lib/tenant/const';
+import { TenantService } from '@lib/tenant/tenant-service.decorator';
+import { Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Connection, Repository } from 'typeorm';
 import { ContentType } from '../entities/content-type.entity';
 
-@Injectable()
+@TenantService()
 export class ContentTypesService {
-  constructor(
-    @InjectRepository(ContentType)
-    private readonly repository: Repository<ContentType>,
-  ) {}
+  private readonly repository: Repository<ContentType>;
+
+  constructor(@Inject(TENANT_CONNECTION) private connection: Connection) {
+    this.repository = this.connection.getRepository(ContentType);
+  }
 
   async create(options: { item: ContentType }) {
     try {

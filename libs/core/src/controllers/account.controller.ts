@@ -20,7 +20,7 @@ import { ICoreConfig } from '../interfaces/core-config.interface';
 import { AccountService } from '../services/account.service';
 
 @ApiTags('account')
-@Controller('/api/account')
+@Controller('/admin/account')
 export class AccountController {
   constructor(
     @Inject(CORE_CONFIG_TOKEN) private readonly coreConfig: ICoreConfig,
