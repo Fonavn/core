@@ -16,15 +16,13 @@
          "libs/tenant/src/**/*.entity.ts"
       ],
       "migrations": [
-         "migrations/**/*.ts",
-         "libs/auth/src/migrations/**/*.ts",
-         "libs/core/src/migrations/**/*.ts"
+         "apps/fona/migrations/**/*.ts"
       ],
       "subscribers": [
          "apps/fona/src/subscriber/**/*.ts"
       ],
       "cli": {
-         "migrationsDir": "migrations"
+         "migrationsDir": "apps/fona/migrations"
       }
    },
    {
@@ -37,7 +35,6 @@
       "database": "fona-test",
       "synchronize": false,
       "logging": false,
-      "dropSchema": true,
       "entities": [
          "apps/fona/src/**/*.entity.ts",
          "libs/core/src/**/*.entity.ts",
@@ -45,15 +42,13 @@
          "libs/tenant/src/**/*.entity.ts"
       ],
       "migrations": [
-         "migrations/**/*.ts",
-         "libs/auth/src/migrations/**/*.ts",
-         "libs/core/src/migrations/**/*.ts"
+         "apps/fona/migrations/**/*.ts"
       ],
       "subscribers": [
          "apps/fona/src/subscriber/**/*.ts"
       ],
       "cli": {
-         "migrationsDir": "migrations"
+         "migrationsDir": "apps/fona/migrations"
       }
    }
 ]

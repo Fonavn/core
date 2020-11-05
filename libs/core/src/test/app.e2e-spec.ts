@@ -10,15 +10,16 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { WinstonModule } from 'nest-winston';
 import * as request from 'supertest';
 import {
+  Connection,
   ConnectionOptions,
-  getConnection,
+  createConnection,
   getConnectionOptions,
 } from 'typeorm';
 import { CORE_CONFIG_TOKEN, DEFAULT_CORE_CONFIG } from '../configs/core.config';
 import { CoreModule } from '../core.module';
 import * as winston from 'winston';
 import { PassportModule } from '@nestjs/passport';
-import assert from 'assert';
+import { AccountSeed } from './seed/account.seed';
 
 describe('AccountController (e2e)', () => {
   let app;
@@ -35,7 +36,20 @@ describe('AccountController (e2e)', () => {
     connectionOptions = {
       ...connectionOptions,
       name: 'default',
-      migrationsRun: true,
+      synchronize: true,
+      dropSchema: true,
+    };
+
+    const seed = new AccountSeed();
+    const connection: Connection = await createConnection(connectionOptions);
+    await seed.up(await connection.createQueryRunner());
+    await connection.close();
+
+    connectionOptions = {
+      ...connectionOptions,
+      name: 'default',
+      synchronize: false,
+      dropSchema: false,
     };
 
     // Create server
@@ -94,41 +108,78 @@ describe('AccountController (e2e)', () => {
     // empty
   });
 
-  it('/ (POST) 403', () => {
-    return request(app.getHttpServer())
-      .post('/api/admin/account/update')
-      .expect(403);
+  describe('Unauthentication', () => {
+    it('/ (POST) 403', () => {
+      return request(app.getHttpServer())
+        .post('/api/admin/account/update')
+        .set('tnid', 'master')
+        .expect(403);
+    });
   });
 
-  it('/ (POST) 200', () => {
-    return request(app.getHttpServer())
-      .post('/api/auth/signin')
-      .set('tnid', 'master')
-      .send({
-        email: admin,
-        password: pass,
-      })
-      .expect(200)
-      .then(res => {
-        const token = res.body.token;
-        return request(app.getHttpServer())
-          .post('/api/admin/account/update')
-          .set('tnid', 'master')
-          .set('Authorization', `JWT ${token}`)
-          .send({
-            email: admin,
-            username: 'admin',
-            password: pass,
-            firstName: 'test',
-            lastName: 'test',
-          })
-          .expect(200)
-          .then(res => {
-            expect(res.body.user.email).toBe(admin);
-            expect(res.body.user.username).toBe('admin');
-            expect(res.body.user.firstName).toBe('test');
-            expect(res.body.user.lastName).toBe('test');
-          });
-      });
+  describe('Unauthentication', () => {
+    it('/ (POST) 200', () => {
+      return request(app.getHttpServer())
+        .post('/api/auth/signin')
+        .set('tnid', 'master')
+        .send({
+          email: admin,
+          password: pass,
+        })
+        .expect(200)
+        .then(res => {
+          const token = res.body.token;
+          return request(app.getHttpServer())
+            .post('/api/admin/account/update')
+            .set('tnid', 'master')
+            .set('Authorization', `JWT ${token}`)
+            .send({
+              email: admin,
+              username: 'admin',
+              password: pass,
+              firstName: 'test',
+              lastName: 'test',
+            })
+            .expect(200)
+            .then(res => {
+              expect(res.body.user.email).toBe(admin);
+              expect(res.body.user.username).toBe('admin');
+              expect(res.body.user.firstName).toBe('test');
+              expect(res.body.user.lastName).toBe('test');
+            });
+        });
+    });
+
+    it('/ (POST) 403: do not have permission', () => {
+      // TODO setup seed first
+      // return request(app.getHttpServer())
+      //   .post('/api/auth/signin')
+      //   .set('tnid', 'master')
+      //   .send({
+      //     email: user1,
+      //     password: pass,
+      //   })
+      //   .expect(200)
+      //   .then(res => {
+      //     console.log(JSON.stringify(res.body, null, 2))
+      //     const token = res.body.token;
+      //     return request(app.getHttpServer())
+      //       .post('/api/admin/account/update')
+      //       .set('tnid', 'master')
+      //       .set('Authorization', `JWT ${token}`)
+      //       .send({
+      //         email: user1,
+      //         username: 'user1',
+      //         password: pass,
+      //         firstName: 'test',
+      //         lastName: 'test',
+      //       })
+      //       .expect(403)
+      //   });
+    });
+  });
+
+  afterAll(async () => {
+    // Empty
   });
 });
