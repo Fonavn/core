@@ -28,6 +28,9 @@ describe('AccountController (e2e)', () => {
   const admin = 'admin@admin.com';
   const user1 = 'user1@user1.com';
   const user2 = 'user2@user2.com';
+  const user3 = 'user3@user3.com';
+  const user4 = 'user4@user4.com';
+  const user5 = 'user5@user5.com';
   const pass = '12345678';
 
   beforeAll(async () => {
@@ -108,17 +111,8 @@ describe('AccountController (e2e)', () => {
     // empty
   });
 
-  describe('Unauthentication', () => {
-    it('/ (POST) 403', () => {
-      return request(app.getHttpServer())
-        .post('/api/admin/account/update')
-        .set('tnid', 'master')
-        .expect(403);
-    });
-  });
-
-  describe('Unauthentication', () => {
-    it('/ (POST) 200', () => {
+  describe('Authenticated', () => {
+    it('/ (POST) 200 admin user', () => {
       return request(app.getHttpServer())
         .post('/api/auth/signin')
         .set('tnid', 'master')
@@ -150,32 +144,123 @@ describe('AccountController (e2e)', () => {
         });
     });
 
-    it('/ (POST) 403: do not have permission', () => {
-      // TODO setup seed first
-      // return request(app.getHttpServer())
-      //   .post('/api/auth/signin')
-      //   .set('tnid', 'master')
-      //   .send({
-      //     email: user1,
-      //     password: pass,
-      //   })
-      //   .expect(200)
-      //   .then(res => {
-      //     console.log(JSON.stringify(res.body, null, 2))
-      //     const token = res.body.token;
-      //     return request(app.getHttpServer())
-      //       .post('/api/admin/account/update')
-      //       .set('tnid', 'master')
-      //       .set('Authorization', `JWT ${token}`)
-      //       .send({
-      //         email: user1,
-      //         username: 'user1',
-      //         password: pass,
-      //         firstName: 'test',
-      //         lastName: 'test',
-      //       })
-      //       .expect(403)
-      //   });
+    it('/ (POST) 200 general user', () => {
+      return request(app.getHttpServer())
+        .post('/api/auth/signin')
+        .set('tnid', 'master')
+        .send({
+          email: user1,
+          password: pass,
+        })
+        .expect(200)
+        .then(res => {
+          const token = res.body.token;
+          return request(app.getHttpServer())
+            .post('/api/admin/account/update')
+            .set('tnid', 'master')
+            .set('Authorization', `JWT ${token}`)
+            .send({
+              email: user1,
+              username: 'user11',
+              password: pass,
+              firstName: 'test',
+              lastName: 'test',
+            })
+            .expect(200)
+            .then(res => {
+              expect(res.body.user.email).toBe(user1);
+              expect(res.body.user.username).toBe('user11');
+              expect(res.body.user.firstName).toBe('test');
+              expect(res.body.user.lastName).toBe('test');
+            });
+        });
+    });
+
+    it('/ (POST) 403 inactive have permission user', () => {
+      return request(app.getHttpServer())
+        .post('/api/auth/signin')
+        .set('tnid', 'master')
+        .send({
+          email: user4,
+          password: pass,
+        })
+        .expect(200)
+        .then(res => {
+          const token = res.body.token;
+          return request(app.getHttpServer())
+            .post('/api/admin/account/update')
+            .set('tnid', 'master')
+            .set('Authorization', `JWT ${token}`)
+            .send({
+              email: user4,
+              username: 'user44',
+              password: pass,
+              firstName: 'test',
+              lastName: 'test',
+            })
+            .expect(200);
+        });
+    });
+
+    it('/ (POST) 403 active user', () => {
+      return request(app.getHttpServer())
+        .post('/api/auth/signin')
+        .set('tnid', 'master')
+        .send({
+          email: user3,
+          password: pass,
+        })
+        .expect(200)
+        .then(res => {
+          const token = res.body.token;
+          return request(app.getHttpServer())
+            .post('/api/admin/account/update')
+            .set('tnid', 'master')
+            .set('Authorization', `JWT ${token}`)
+            .send({
+              email: user3,
+              username: 'user33',
+              password: pass,
+              firstName: 'test',
+              lastName: 'test',
+            })
+            .expect(200);
+        });
+    });
+  });
+
+  describe('Unauthentication', () => {
+    it('/ (POST) 403 guest user', () => {
+      return request(app.getHttpServer())
+        .post('/api/admin/account/update')
+        .set('tnid', 'master')
+        .expect(403);
+    });
+
+    it('/ (POST) 403 inactive doesnt have permission user', () => {
+      return request(app.getHttpServer())
+        .post('/api/auth/signin')
+        .set('tnid', 'master')
+        .send({
+          email: user5,
+          password: pass,
+        })
+        .expect(200)
+        .then(res => {
+          const token = res.body.token;
+          return request(app.getHttpServer())
+            .post('/api/admin/account/update')
+            .set('tnid', 'master')
+            .set('Authorization', `JWT ${token}`)
+            .send({
+              email: user5,
+              username: 'user55',
+              password: pass,
+              firstName: 'test',
+              lastName: 'test',
+            })
+            .expect(403);
+        });
     });
   });
 

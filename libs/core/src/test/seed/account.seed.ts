@@ -134,6 +134,13 @@ export class AccountSeed implements MigrationInterface {
         ),
       }),
     );
+    const lUser = await queryRunner.manager.getRepository<Group>(Group).save(
+      plainToClass(Group, {
+        name: 'limit',
+        title: 'Limit',
+        permissions: [],
+      }),
+    );
     const gAdmin = await queryRunner.manager.getRepository<Group>(Group).save(
       plainToClass(Group, {
         name: 'admin',
@@ -176,6 +183,39 @@ export class AccountSeed implements MigrationInterface {
           isStaff: false,
           isActive: true,
           groups: [gUser],
+        },
+        {
+          username: 'user3',
+          email: 'user3@user3.com',
+          password: await tempUser.createPassword('12345678'),
+          firstName: 'User3FirstName',
+          lastName: 'User3LastName',
+          isSuperuser: false,
+          isStaff: false,
+          isActive: true,
+          groups: [lUser],
+        },
+        {
+          username: 'user4',
+          email: 'user4@user4.com',
+          password: await tempUser.createPassword('12345678'),
+          firstName: 'User4FirstName',
+          lastName: 'User4LastName',
+          isSuperuser: false,
+          isStaff: false,
+          isActive: false,
+          groups: [gUser],
+        },
+        {
+          username: 'user5',
+          email: 'user5@user5.com',
+          password: await tempUser.createPassword('12345678'),
+          firstName: 'User5FirstName',
+          lastName: 'User5LastName',
+          isSuperuser: false,
+          isStaff: false,
+          isActive: false,
+          groups: [lUser],
         },
       ]),
     );
