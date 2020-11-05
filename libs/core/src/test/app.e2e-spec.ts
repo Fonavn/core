@@ -229,7 +229,7 @@ describe('AccountController (e2e)', () => {
     });
   });
 
-  describe('Unauthentication', () => {
+  describe('Unauthenticated', () => {
     it('/ (POST) 403 guest user', () => {
       return request(app.getHttpServer())
         .post('/api/admin/account/update')
