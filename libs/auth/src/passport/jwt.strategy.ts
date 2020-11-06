@@ -9,13 +9,12 @@ import { plainToClass } from 'class-transformer';
 import { Strategy } from 'passport-jwt';
 import { IJwtPayload } from '../interfaces/jwt-payload.interface';
 import { TokenService } from '../services/token.service';
-import { ContextIdFactory, ModuleRef } from '@nestjs/core';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor(
-    private moduleRef: ModuleRef,
     private readonly tokenService: TokenService,
+    private readonly groupsService: GroupsService,
   ) {
     super({
       passReqToCallback: true,
@@ -34,16 +33,8 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   }
 
   public async validate(req, payload: IJwtPayload) {
-    const contextId = ContextIdFactory.getByRequest(req);
-    this.moduleRef.registerRequestByContextId(req, contextId);
-    const groupsService = await this.moduleRef.resolve(
-      GroupsService,
-      contextId,
-      { strict: false },
-    );
-
     try {
-      await groupsService.preloadAll();
+      await this.groupsService.preloadAll();
     } catch (error) {
       throw new BadRequestException('Error in load groups');
     }
@@ -52,7 +43,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
       // const { user } = await this.userService.findById({ id: payload.id });
       const user = plainToClass(User, payload);
       user.groups = user.groups.map(group =>
-        groupsService.getGroupByName({ name: group.name }),
+        this.groupsService.getGroupByName({ name: group.name }),
       );
       // Logger.log(JSON.stringify(user), JwtStrategy.name);
       return user;

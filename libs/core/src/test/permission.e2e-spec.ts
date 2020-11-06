@@ -25,6 +25,7 @@ import { Console } from 'winston/lib/winston/transports';
 import { InPermissionDto } from '../dto/in-permission.dto';
 import { PermissionSeed } from './seed/permission.seed';
 import { Permission } from '../entities/permission.entity';
+import adminRoutes from '@app/fona/config/admin-route';
 
 jest.setTimeout(10000);
 describe('Permission (e2e)', () => {
@@ -111,7 +112,7 @@ describe('Permission (e2e)', () => {
             imports: [],
           },
         ),
-        TenantModule.forRoot([]),
+        TenantModule.forRoot([], adminRoutes),
       ],
     }).compile();
 

@@ -21,6 +21,7 @@ import * as winston from 'winston';
 import { PassportModule } from '@nestjs/passport';
 import { BaseSeed } from './seed/base.seed';
 import { Console } from 'winston/lib/winston/transports';
+import adminRoutes from '@app/fona/config/admin-route';
 
 describe('AccountController (e2e)', () => {
   let app;
@@ -99,7 +100,7 @@ describe('AccountController (e2e)', () => {
             imports: [],
           },
         ),
-        TenantModule.forRoot([]),
+        TenantModule.forRoot([], adminRoutes),
       ],
     }).compile();
 

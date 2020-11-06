@@ -27,6 +27,7 @@ import { InCreateUserDto } from '../dto/in-create-user.dto';
 import { InUserDto } from '../dto/in-user.dto';
 import { User } from '../entities/user.entity';
 import { Console } from 'winston/lib/winston/transports';
+import adminRoutes from '@app/fona/config/admin-route';
 
 jest.setTimeout(10000);
 describe('User (e2e)', () => {
@@ -130,7 +131,7 @@ describe('User (e2e)', () => {
             imports: [],
           },
         ),
-        TenantModule.forRoot([]),
+        TenantModule.forRoot([], adminRoutes),
       ],
     }).compile();
 

@@ -28,6 +28,7 @@ import { Console } from 'winston/lib/winston/transports';
 import { InGroupDto } from '../dto/in-group.dto';
 import { GroupSeed } from './seed/group.seed';
 import { Group } from '../entities/group.entity';
+import adminRoutes from '@app/fona/config/admin-route';
 
 jest.setTimeout(10000);
 describe('Group (e2e)', () => {
@@ -114,7 +115,7 @@ describe('Group (e2e)', () => {
             imports: [],
           },
         ),
-        TenantModule.forRoot([]),
+        TenantModule.forRoot([], adminRoutes),
       ],
     }).compile();
 

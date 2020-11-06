@@ -25,6 +25,7 @@ import { Console } from 'winston/lib/winston/transports';
 import { InContentTypeDto } from '../dto/in-content-type.dto';
 import { ContentType } from '../entities/content-type.entity';
 import { ContentTypeSeed } from './seed/content-type.seed';
+import adminRoutes from '@app/fona/config/admin-route';
 
 jest.setTimeout(10000);
 describe('ContentType (e2e)', () => {
@@ -111,7 +112,7 @@ describe('ContentType (e2e)', () => {
             imports: [],
           },
         ),
-        TenantModule.forRoot([]),
+        TenantModule.forRoot([], adminRoutes),
       ],
     }).compile();
 

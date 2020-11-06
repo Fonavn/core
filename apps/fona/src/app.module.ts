@@ -14,6 +14,7 @@ import { RequestTimeMiddleware } from './common/middlewares/request-time.middlew
 import { TodoModule } from './todo/todo.module';
 import { TenantModule } from '@lib/tenant';
 import entities from './config/tenant-entity';
+import adminRoutes from './config/admin-route';
 
 @Module({
   imports: [
@@ -73,7 +74,7 @@ import entities from './config/tenant-entity';
         inject: [ConfigService],
       },
     ),
-    TenantModule.forRoot(entities),
+    TenantModule.forRoot(entities, adminRoutes),
     TodoModule,
   ],
   controllers: [AppController],
