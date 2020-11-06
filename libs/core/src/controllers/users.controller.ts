@@ -154,6 +154,7 @@ export class UsersController {
     type: OutUsersDto,
     description: '',
   })
+  @ApiResponse({ status: HttpStatus.NOT_FOUND, description: 'User not found' })
   @ApiResponse({ status: HttpStatus.FORBIDDEN, description: 'Forbidden.' })
   @ApiQuery({
     name: 'q',

@@ -23,7 +23,6 @@ export * from './interfaces/facebook-config.interface';
 export * from './interfaces/google-plus-config.interface';
 export * from './interfaces/jwt-config.interface';
 export * from './interfaces/jwt-payload.interface';
-export * from './migrations/1533634559617-AddOauthTokensAccesstokenTable';
 export * from './passport/facebook.strategy';
 export * from './passport/google-plus.strategy';
 export * from './passport/index';

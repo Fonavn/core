@@ -8,19 +8,34 @@ import {
   Logger,
 } from '@nestjs/common';
 import { ValidationError } from 'class-validator';
+import { QueryFailedError } from 'typeorm';
+import { EntityNotFoundError } from 'typeorm/error/EntityNotFoundError';
 import { CORE_CONFIG_TOKEN } from '../configs/core.config';
 import { CustomValidationError } from '../exceptions/custom-validation.error';
 import { CustomError } from '../exceptions/custom.error';
 import { ICoreConfig } from '../interfaces/core-config.interface';
 
-@Catch(SyntaxError, CustomValidationError, CustomError, HttpException)
+@Catch(
+  SyntaxError,
+  CustomValidationError,
+  CustomError,
+  HttpException,
+  QueryFailedError,
+  EntityNotFoundError,
+)
 export class CustomExceptionFilter implements ExceptionFilter {
   constructor(
     @Inject(CORE_CONFIG_TOKEN) private readonly coreConfig: ICoreConfig,
   ) {}
 
   private response(
-    exception: CustomValidationError | SyntaxError | Error | HttpException,
+    exception:
+      | CustomValidationError
+      | SyntaxError
+      | Error
+      | HttpException
+      | QueryFailedError
+      | EntityNotFoundError,
     host: ArgumentsHost,
     data: any,
     status?: number,
@@ -45,7 +60,13 @@ export class CustomExceptionFilter implements ExceptionFilter {
   }
 
   catch(
-    exception: CustomValidationError | SyntaxError | Error | HttpException,
+    exception:
+      | CustomValidationError
+      | SyntaxError
+      | Error
+      | HttpException
+      | QueryFailedError
+      | EntityNotFoundError,
     host: ArgumentsHost,
   ) {
     const errors = {};
@@ -83,6 +104,32 @@ export class CustomExceptionFilter implements ExceptionFilter {
               : 'Http exception',
         },
         exception.getStatus(),
+      );
+    }
+    if (exception instanceof QueryFailedError) {
+      this.response(
+        exception,
+        host,
+        {
+          message:
+            exception.message && exception.message
+              ? exception.message
+              : 'SQL exception',
+        },
+        500,
+      );
+    }
+    if (exception instanceof EntityNotFoundError) {
+      this.response(
+        exception,
+        host,
+        {
+          message:
+            exception.message && exception.message
+              ? exception.message
+              : 'SQL exception',
+        },
+        404,
       );
     }
   }

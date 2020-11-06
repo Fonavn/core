@@ -27,7 +27,7 @@ import { AuthService } from '../services/auth.service';
 import { TokenService } from '../services/token.service';
 
 @ApiTags('auth')
-@Controller('/api/auth')
+@Controller('/auth')
 export class AuthController {
   constructor(
     @Inject(AUTH_CORE_TOKEN) private readonly coreConfig: IAuthCoreConfig,

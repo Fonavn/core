@@ -71,5 +71,5 @@
     "tsConfigPath": "apps/nestjs-query-test/tsconfig.app.json"
   },
   "monorepo": true,
-  "root": "apps/nestjs-query-test"
+  "root": "apps/fona"
 }
