@@ -19,7 +19,8 @@ import { CORE_CONFIG_TOKEN, DEFAULT_CORE_CONFIG } from '../configs/core.config';
 import { CoreModule } from '../core.module';
 import * as winston from 'winston';
 import { PassportModule } from '@nestjs/passport';
-import { AccountSeed } from './seed/account.seed';
+import { BaseSeed } from './seed/base.seed';
+import { Console } from 'winston/lib/winston/transports';
 
 describe('AccountController (e2e)', () => {
   let app;
@@ -43,7 +44,7 @@ describe('AccountController (e2e)', () => {
       dropSchema: true,
     };
 
-    const seed = new AccountSeed();
+    const seed = new BaseSeed();
     const connection: Connection = await createConnection(connectionOptions);
     await seed.up(await connection.createQueryRunner());
     await connection.close();
@@ -61,6 +62,7 @@ describe('AccountController (e2e)', () => {
         WinstonModule.forRoot({
           level: 'info',
           format: winston.format.json(),
+          transports: [new Console()],
         }),
         TypeOrmModule.forRoot(connectionOptions),
         PassportModule.register({ defaultStrategy: 'jwt' }),
@@ -176,7 +178,7 @@ describe('AccountController (e2e)', () => {
         });
     });
 
-    it('/ (POST) 403 inactive have permission user', () => {
+    it('/ (POST) 200 inactive have permission user', () => {
       return request(app.getHttpServer())
         .post('/api/auth/signin')
         .set('tnid', 'master')
@@ -202,7 +204,7 @@ describe('AccountController (e2e)', () => {
         });
     });
 
-    it('/ (POST) 403 active user', () => {
+    it('/ (POST) 200 active user', () => {
       return request(app.getHttpServer())
         .post('/api/auth/signin')
         .set('tnid', 'master')
@@ -265,6 +267,6 @@ describe('AccountController (e2e)', () => {
   });
 
   afterAll(async () => {
-    // Empty
+    await app.close();
   });
 });

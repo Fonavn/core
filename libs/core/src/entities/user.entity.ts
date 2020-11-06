@@ -5,7 +5,7 @@ import {
   MaxLength,
   validateSync,
 } from 'class-validator';
-import * as hashers from 'node-django-hashers';
+import { SHA256 } from 'crypto-js';
 import {
   BeforeInsert,
   BeforeUpdate,
@@ -101,14 +101,12 @@ export class User {
 
   // TODO add salt
   async createPassword(password: string) {
-    const h = new hashers.PBKDF2PasswordHasher();
-    const hash = await h.encode(password, h.salt());
+    const hash = await SHA256(password).toString();
     return hash;
   }
 
   async validatePassword(password: string) {
-    const h = new hashers.PBKDF2PasswordHasher();
-    return h.verify(password, this.password);
+    return this.password === SHA256(password).toString();
   }
 
   async setPassword(password: string) {

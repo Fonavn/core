@@ -5,7 +5,7 @@ import { User } from '@lib/core/entities/user.entity';
 import { plainToClass } from 'class-transformer';
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AccountSeed implements MigrationInterface {
+export class BaseSeed implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<any> {
     const ctPermission = await queryRunner.manager
       .getRepository<ContentType>(ContentType)
@@ -151,6 +151,17 @@ export class AccountSeed implements MigrationInterface {
     const tempUser = new User();
     await queryRunner.manager.getRepository<User>(User).save(
       plainToClass(User, [
+        {
+          username: 'super',
+          email: 'super@super.com',
+          password: await tempUser.createPassword('12345678'),
+          firstName: 'SuperFirstName',
+          lastName: 'SuperLastName',
+          isSuperuser: false,
+          isStaff: false,
+          isActive: true,
+          groups: [gAdmin],
+        },
         {
           username: 'admin',
           email: 'admin@admin.com',
