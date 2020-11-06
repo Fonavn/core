@@ -106,6 +106,8 @@
       "<rootDir>/apps/"
     ],
     "moduleNameMapper": {
+      "@app/fona/(.*)": "<rootDir>/apps/fona/src/$1",
+      "@app/fona": "<rootDir>/apps/fona/src",
       "@lib/auth/(.*)": "<rootDir>/libs/auth/src/$1",
       "@lib/auth": "<rootDir>/libs/auth/src",
       "@lib/core/(.*)": "<rootDir>/libs/core/src/$1",
