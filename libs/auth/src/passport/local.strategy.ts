@@ -52,6 +52,7 @@ export class LocalStrategySignUp extends PassportStrategy(Strategy, 'signup') {
     }
 
     const contextId = ContextIdFactory.getByRequest(req);
+    this.moduleRef.registerRequestByContextId(req, contextId);
     const authService = await this.getAuthService(contextId);
 
     const { user } = await authService.signUp({
