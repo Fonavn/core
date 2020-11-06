@@ -21,16 +21,13 @@ import * as winston from 'winston';
 import { PassportModule } from '@nestjs/passport';
 import { BaseSeed } from './seed/base.seed';
 import * as faker from 'faker';
-import { InCreateUserDto } from '../dto/in-create-user.dto';
-import { InUserDto } from '../dto/in-user.dto';
-import { User } from '../entities/user.entity';
 import { Console } from 'winston/lib/winston/transports';
-import { InGroupDto } from '../dto/in-group.dto';
-import { GroupSeed } from './seed/group.seed';
-import { Group } from '../entities/group.entity';
+import { InPermissionDto } from '../dto/in-permission.dto';
+import { PermissionSeed } from './seed/permission.seed';
+import { Permission } from '../entities/permission.entity';
 
 jest.setTimeout(10000);
-describe('Group (e2e)', () => {
+describe('Permission (e2e)', () => {
   let app;
   let connectionOptions: ConnectionOptions;
   // Create data
@@ -57,11 +54,11 @@ describe('Group (e2e)', () => {
     };
 
     const baseSeed = new BaseSeed();
-    const groupSeed = new GroupSeed();
+    const permissionSeed = new PermissionSeed();
     const connection: Connection = await createConnection(connectionOptions);
     const queryRunner = await connection.createQueryRunner();
     await baseSeed.up(queryRunner);
-    await groupSeed.up(queryRunner);
+    await permissionSeed.up(queryRunner);
     await connection.close();
 
     connectionOptions = {
@@ -158,101 +155,101 @@ describe('Group (e2e)', () => {
       .then(res => res.body.token);
   });
 
-  describe('Add group', () => {
+  describe('Add permission', () => {
     describe('Authenticated', () => {
-      it('/ (POST) 201 super user can create group', () => {
+      it('/ (POST) 201 super user can create permission', () => {
         const name = faker.name.findName();
         const title = faker.random.word();
         return request(app.getHttpServer())
-          .post('/api/admin/groups')
+          .post('/api/admin/permissions')
           .set('tnid', 'master')
           .set('Authorization', `JWT ${superToken}`)
           .send({
             name,
             title,
-          } as InGroupDto)
+          } as InPermissionDto)
           .expect(201)
           .then(res => {
-            expect(res.body.group.name).toBe(name);
-            expect(res.body.group.title).toBe(title);
+            expect(res.body.permission.name).toBe(name);
+            expect(res.body.permission.title).toBe(title);
           });
       });
 
-      it('/ (POST) 201 admin user can create group', () => {
+      it('/ (POST) 201 admin user can create permission', () => {
         const name = faker.name.findName();
         const title = faker.random.word();
         return request(app.getHttpServer())
-          .post('/api/admin/groups')
+          .post('/api/admin/permissions')
           .set('tnid', 'master')
           .set('Authorization', `JWT ${adminToken}`)
           .send({
             name,
             title,
-          } as InGroupDto)
+          } as InPermissionDto)
           .expect(201)
           .then(res => {
-            expect(res.body.group.name).toBe(name);
-            expect(res.body.group.title).toBe(title);
+            expect(res.body.permission.name).toBe(name);
+            expect(res.body.permission.title).toBe(title);
           });
       });
 
-      it('/ (POST) 201 inactive admin user can create group', () => {
+      it('/ (POST) 201 inactive admin user can create permission', () => {
         const name = faker.name.findName();
         const title = faker.random.word();
         return request(app.getHttpServer())
-          .post('/api/admin/groups')
+          .post('/api/admin/permissions')
           .set('tnid', 'master')
           .set('Authorization', `JWT ${adminInactiveToken}`)
           .send({
             name,
             title,
-          } as InGroupDto)
+          } as InPermissionDto)
           .expect(201)
           .then(res => {
-            expect(res.body.group.name).toBe(name);
-            expect(res.body.group.title).toBe(title);
+            expect(res.body.permission.name).toBe(name);
+            expect(res.body.permission.title).toBe(title);
           });
       });
 
-      it('/ (POST) 201 staff user with permission can create group', () => {
+      it('/ (POST) 201 staff user with permission can create permission', () => {
         const name = faker.name.findName();
         const title = faker.random.word();
         return request(app.getHttpServer())
           .post('/api/auth/signin')
           .set('tnid', 'master')
           .send({
-            email: 'addGroupUser@addGroupUser.com',
+            email: 'addPermissionUser@addPermissionUser.com',
             password: pass,
           })
           .then(res => {
             return request(app.getHttpServer())
-              .post('/api/admin/groups')
+              .post('/api/admin/permissions')
               .set('tnid', 'master')
               .set('Authorization', `JWT ${res.body.token}`)
               .send({
                 name,
                 title,
-              } as InGroupDto)
+              } as InPermissionDto)
               .expect(201)
               .then(res => {
-                expect(res.body.group.name).toBe(name);
-                expect(res.body.group.title).toBe(title);
+                expect(res.body.permission.name).toBe(name);
+                expect(res.body.permission.title).toBe(title);
               });
           });
       });
     });
 
     describe('Unauthenticated', () => {
-      it('/ (POST) 403 guest user cannot create group', () => {
+      it('/ (POST) 403 guest user cannot create permission', () => {
         return request(app.getHttpServer())
-          .post('/api/admin/groups')
+          .post('/api/admin/permissions')
           .set('tnid', 'master')
           .expect(403);
       });
 
-      it('/ (POST) 403 general user cannot create group', () => {
+      it('/ (POST) 403 general user cannot create permission', () => {
         return request(app.getHttpServer())
-          .post('/api/admin/groups')
+          .post('/api/admin/permissions')
           .set('tnid', 'master')
           .set('Authorization', `JWT ${staffToken}`)
           .send({
@@ -264,80 +261,80 @@ describe('Group (e2e)', () => {
     });
   });
 
-  describe('Change group', () => {
-    let group: Group;
+  describe('Change permission', () => {
+    let permission: Permission;
     beforeEach(async () => {
       const name = faker.name.findName();
       const title = faker.random.word();
-      group = await request(app.getHttpServer())
-        .post('/api/admin/groups')
+      permission = await request(app.getHttpServer())
+        .post('/api/admin/permissions')
         .set('tnid', 'master')
         .set('Authorization', `JWT ${superToken}`)
         .send({
           name,
           title,
-        } as InGroupDto)
+        } as InPermissionDto)
         .expect(201)
         .then(res => {
-          return res.body.group;
+          return res.body.permission;
         });
     });
 
     describe('Authenticated', () => {
-      it('/ (PUT) 200 super user can change group', () => {
+      it('/ (PUT) 200 super user can change permission', () => {
         const name = faker.name.firstName();
         const title = faker.random.word();
 
         return request(app.getHttpServer())
-          .put(`/api/admin/groups/${group.id}`)
+          .put(`/api/admin/permissions/${permission.id}`)
           .set('tnid', 'master')
           .set('Authorization', `JWT ${superToken}`)
           .send({
             name,
             title,
-          } as InGroupDto)
+          } as InPermissionDto)
           .expect(200)
           .then(res => {
-            expect(res.body.group.name).toBe(name);
-            expect(res.body.group.title).toBe(title);
+            expect(res.body.permission.name).toBe(name);
+            expect(res.body.permission.title).toBe(title);
           });
       });
 
-      it('/ (PUT) 200 admin user can change group', () => {
+      it('/ (PUT) 200 admin user can change permission', () => {
         const name = faker.name.firstName();
         const title = faker.random.word();
 
         return request(app.getHttpServer())
-          .put(`/api/admin/groups/${group.id}`)
+          .put(`/api/admin/permissions/${permission.id}`)
           .set('tnid', 'master')
           .set('Authorization', `JWT ${adminToken}`)
           .send({
             name,
             title,
-          } as InGroupDto)
+          } as InPermissionDto)
           .expect(200)
           .then(res => {
-            expect(res.body.group.name).toBe(name);
-            expect(res.body.group.title).toBe(title);
+            expect(res.body.permission.name).toBe(name);
+            expect(res.body.permission.title).toBe(title);
           });
       });
 
-      it('/ (PUT) 200 inactive admin user can change group', () => {
+      it('/ (PUT) 200 inactive admin user can change permission', () => {
         const name = faker.name.firstName();
         const title = faker.random.word();
 
         return request(app.getHttpServer())
-          .put(`/api/admin/groups/${group.id}`)
+          .put(`/api/admin/permissions/${permission.id}`)
           .set('tnid', 'master')
           .set('Authorization', `JWT ${adminInactiveToken}`)
           .send({
             name,
             title,
-          } as InGroupDto)
+          } as InPermissionDto)
           .expect(200)
           .then(res => {
-            expect(res.body.group.name).toBe(name);
-            expect(res.body.group.title).toBe(title);
+            expect(res.body.permission.name).toBe(name);
+            expect(res.body.permission.title).toBe(title);
           });
       });
 
@@ -346,7 +343,7 @@ describe('Group (e2e)', () => {
           .post('/api/auth/signin')
           .set('tnid', 'master')
           .send({
-            email: 'changeGroupUser@changeGroupUser.com',
+            email: 'changePermissionUser@changePermissionUser.com',
             password: pass,
           })
           .expect(200)
@@ -355,17 +352,17 @@ describe('Group (e2e)', () => {
             const title = faker.random.word();
 
             return request(app.getHttpServer())
-              .put(`/api/admin/groups/${group.id}`)
+              .put(`/api/admin/permissions/${permission.id}`)
               .set('tnid', 'master')
               .set('Authorization', `JWT ${adminInactiveToken}`)
               .send({
                 name,
                 title,
-              } as InGroupDto)
+              } as InPermissionDto)
               .expect(200)
               .then(res => {
-                expect(res.body.group.name).toBe(name);
-                expect(res.body.group.title).toBe(title);
+                expect(res.body.permission.name).toBe(name);
+                expect(res.body.permission.title).toBe(title);
               });
           });
       });
@@ -374,7 +371,7 @@ describe('Group (e2e)', () => {
     describe('Unauthenticated', () => {
       it('/ (PUT) 403 guest user cannot change user', () => {
         return request(app.getHttpServer())
-          .put('/api/admin/groups/3')
+          .put('/api/admin/permissions/3')
           .set('tnid', 'master')
           .send({
             name: faker.name.firstName(),
@@ -385,7 +382,7 @@ describe('Group (e2e)', () => {
 
       it('/ (PUT) 403 general user cannot change user', () => {
         return request(app.getHttpServer())
-          .put('/api/admin/groups/3')
+          .put('/api/admin/permissions/3')
           .set('tnid', 'master')
           .set('Authorization', `JWT ${staffToken}`)
           .send({
@@ -397,89 +394,89 @@ describe('Group (e2e)', () => {
     });
   });
 
-  describe('Delete group', () => {
+  describe('Delete permission', () => {
     describe('Authenticated', () => {
-      let group: Group;
+      let permission: Permission;
       beforeEach(async () => {
         const name = faker.name.findName();
         const title = faker.random.word();
-        group = await request(app.getHttpServer())
-          .post('/api/admin/groups')
+        permission = await request(app.getHttpServer())
+          .post('/api/admin/permissions')
           .set('tnid', 'master')
           .set('Authorization', `JWT ${superToken}`)
           .send({
             name,
             title,
-          } as InGroupDto)
+          } as InPermissionDto)
           .expect(201)
           .then(res => {
-            return res.body.group;
+            return res.body.permission;
           });
       });
 
-      it('/ (DELETE) 204 super user can delete group', () => {
+      it('/ (DELETE) 204 super user can delete permission', () => {
         return request(app.getHttpServer())
-          .delete(`/api/admin/groups/${group.id}`)
+          .delete(`/api/admin/permissions/${permission.id}`)
           .set('tnid', 'master')
           .set('Authorization', `JWT ${superToken}`)
           .expect(204)
           .then(() => {
             return request(app.getHttpServer())
-              .get(`/api/admin/groups/${group.id}`)
+              .get(`/api/admin/permissions/${permission.id}`)
               .set('tnid', 'master')
               .set('Authorization', `JWT ${superToken}`)
               .expect(404);
           });
       });
 
-      it('/ (DELETE) 200 admin user can delete group', () => {
+      it('/ (DELETE) 200 admin user can delete permission', () => {
         return request(app.getHttpServer())
-          .delete(`/api/admin/groups/${group.id}`)
+          .delete(`/api/admin/permissions/${permission.id}`)
           .set('tnid', 'master')
           .set('Authorization', `JWT ${adminToken}`)
           .expect(204)
           .then(() => {
             return request(app.getHttpServer())
-              .get(`/api/admin/groups/${group.id}`)
+              .get(`/api/admin/permissions/${permission.id}`)
               .set('tnid', 'master')
               .set('Authorization', `JWT ${superToken}`)
               .expect(404);
           });
       });
 
-      it('/ (DELETE) 200 inactive admin user can delete group', () => {
+      it('/ (DELETE) 200 inactive admin user can delete permission', () => {
         return request(app.getHttpServer())
-          .delete(`/api/admin/groups/${group.id}`)
+          .delete(`/api/admin/permissions/${permission.id}`)
           .set('tnid', 'master')
           .set('Authorization', `JWT ${adminInactiveToken}`)
           .expect(204)
           .then(() => {
             return request(app.getHttpServer())
-              .get(`/api/admin/groups/${group.id}`)
+              .get(`/api/admin/permissions/${permission.id}`)
               .set('tnid', 'master')
               .set('Authorization', `JWT ${superToken}`)
               .expect(404);
           });
       });
 
-      it('/ (DELETE) 200 staff user with permission can delete group', () => {
+      it('/ (DELETE) 200 staff user with permission can delete permission', () => {
         return request(app.getHttpServer())
           .post('/api/auth/signin')
           .set('tnid', 'master')
           .send({
-            email: 'deleteGroupUser@deleteGroupUser.com',
+            email: 'deletePermissionUser@deletePermissionUser.com',
             password: pass,
           })
           .expect(200)
           .then(res => {
             return request(app.getHttpServer())
-              .delete(`/api/admin/groups/${group.id}`)
+              .delete(`/api/admin/permissions/${permission.id}`)
               .set('tnid', 'master')
               .set('Authorization', `JWT ${res.body.token}`)
               .expect(204)
               .then(() => {
                 return request(app.getHttpServer())
-                  .get(`/api/admin/groups/${group.id}`)
+                  .get(`/api/admin/permissions/${permission.id}`)
                   .set('tnid', 'master')
                   .set('Authorization', `JWT ${superToken}`)
                   .expect(404);
@@ -489,16 +486,16 @@ describe('Group (e2e)', () => {
     });
 
     describe('Unauthenticated', () => {
-      it('/ (DELETE) 403 guest user cannot delete group', () => {
+      it('/ (DELETE) 403 guest user cannot delete permission', () => {
         return request(app.getHttpServer())
-          .delete('/api/admin/groups/3')
+          .delete('/api/admin/permissions/3')
           .set('tnid', 'master')
           .expect(403);
       });
 
-      it('/ (DELETE) 403 general user cannot delete group', () => {
+      it('/ (DELETE) 403 general user cannot delete permission', () => {
         return request(app.getHttpServer())
-          .delete('/api/admin/groups/3')
+          .delete('/api/admin/permissions/3')
           .set('tnid', 'master')
           .set('Authorization', `JWT ${staffToken}`)
           .expect(403);
@@ -506,96 +503,86 @@ describe('Group (e2e)', () => {
     });
   });
 
-  describe('Read group', () => {
+  describe('Read permission', () => {
     describe('Authenticated', () => {
-      it('/ (GET) 200 super user can read group', () => {
+      it('/ (GET) 200 super user can read permission', () => {
         return request(app.getHttpServer())
-          .get(`/api/admin/groups/1`)
+          .get(`/api/admin/permissions/1`)
           .set('tnid', 'master')
           .set('Authorization', `JWT ${superToken}`)
           .expect(200)
           .then(res => {
-            expect(res.body.group.id).toBe(1);
-            expect(res.body.group.name).toBeDefined();
-            expect(res.body.group.title).toBeDefined();
-
-            expect(res.body.group.permissions).toBeDefined();
-            expect(res.body.group.permissions[0]).toBeDefined();
-            expect(res.body.group.permissions[0].id).toBeDefined();
-            expect(res.body.group.permissions[0].name).toBeDefined();
-            expect(res.body.group.permissions[0].title).toBeDefined();
-            expect(res.body.group.permissions[0].contentType).toBeDefined();
-            expect(res.body.group.permissions[0].contentType.id).toBeDefined();
-            expect(
-              res.body.group.permissions[0].contentType.name,
-            ).toBeDefined();
-            expect(
-              res.body.group.permissions[0].contentType.title,
-            ).toBeDefined();
+            expect(res.body.permission.id).toBe(1);
+            expect(res.body.permission.name).toBeDefined();
+            expect(res.body.permission.title).toBeDefined();
+            expect(res.body.permission.contentType).toBeDefined();
+            expect(res.body.permission.contentType.id).toBeDefined();
+            expect(res.body.permission.contentType.name).toBeDefined();
+            expect(res.body.permission.contentType.title).toBeDefined();
           });
       });
 
-      it('/ (GET) 200 admin user can read group', () => {
+      it('/ (GET) 200 admin user can read permission', () => {
         return request(app.getHttpServer())
-          .get(`/api/admin/groups/1`)
+          .get(`/api/admin/permissions/1`)
           .set('tnid', 'master')
           .set('Authorization', `JWT ${adminToken}`)
           .expect(200)
           .then(res => {
-            expect(res.body.group.id).toBe(1);
-            expect(res.body.group.name).toBeDefined();
-            expect(res.body.group.title).toBeDefined();
+            expect(res.body.permission.id).toBe(1);
+            expect(res.body.permission.name).toBeDefined();
+            expect(res.body.permission.title).toBeDefined();
           });
       });
 
-      it('/ (GET) 200 inactive admin user can read group', () => {
+      it('/ (GET) 200 inactive admin user can read permission', () => {
         return request(app.getHttpServer())
-          .get(`/api/admin/groups/1`)
+          .get(`/api/admin/permissions/1`)
           .set('tnid', 'master')
           .set('Authorization', `JWT ${adminInactiveToken}`)
           .expect(200)
           .then(res => {
-            expect(res.body.group.id).toBe(1);
-            expect(res.body.group.name).toBeDefined();
-            expect(res.body.group.title).toBeDefined();
+            expect(res.body.permission.id).toBe(1);
+            expect(res.body.permission.name).toBeDefined();
+            expect(res.body.permission.title).toBeDefined();
           });
       });
 
-      it('/ (GET) 200 staff user with permission can read group', () => {
+      it('/ (GET) 200 staff user with permission can read permission', () => {
         return request(app.getHttpServer())
           .post('/api/auth/signin')
           .set('tnid', 'master')
           .send({
-            email: 'readGroupUser@readGroupUser.com',
+            email: 'readPermissionUser@readPermissionUser.com',
             password: pass,
           })
           .expect(200)
           .then(res => {
             return request(app.getHttpServer())
-              .get(`/api/admin/groups/1`)
+              .get(`/api/admin/permissions/1`)
               .set('tnid', 'master')
               .set('Authorization', `JWT ${res.body.token}`)
               .expect(200)
               .then(res => {
-                expect(res.body.group.id).toBe(1);
-                expect(res.body.group.name).toBeDefined();
-                expect(res.body.group.title).toBeDefined();
+                expect(res.body.permission.id).toBe(1);
+                expect(res.body.permission.name).toBeDefined();
+                expect(res.body.permission.title).toBeDefined();
               });
           });
       });
     });
 
     describe('Unauthenticated', () => {
-      it('/ (GET) 403 guest user cannot read group', () => {
+      it('/ (GET) 403 guest user cannot read permission', () => {
         return request(app.getHttpServer())
-          .get(`/api/admin/groups/1`)
+          .get(`/api/admin/permissions/1`)
           .set('tnid', 'master')
           .expect(403);
       });
 
-      it('/ (GET) 403 general user cannot read group', () => {
+      it('/ (GET) 403 general user cannot read permission', () => {
         return request(app.getHttpServer())
-          .get(`/api/admin/groups/1`)
+          .get(`/api/admin/permissions/1`)
           .set('tnid', 'master')
           .set('Authorization', `JWT ${staffToken}`)
           .expect(403);
@@ -603,69 +590,69 @@ describe('Group (e2e)', () => {
     });
   });
 
-  describe('Read groups', () => {
+  describe('Read permissions', () => {
     describe('Authenticated', () => {
-      it('/ (GET) 200 super user can read groups', () => {
+      it('/ (GET) 200 super user can read permissions', () => {
         return request(app.getHttpServer())
-          .get(`/api/admin/groups`)
+          .get(`/api/admin/permissions`)
           .set('tnid', 'master')
           .set('Authorization', `JWT ${superToken}`)
           .expect(200)
           .then(res => {
-            expect(res.body.groups).toBeDefined();
+            expect(res.body.permissions).toBeDefined();
             expect(res.body.meta).toBeDefined();
             expect(res.body.meta.curPage).toBeDefined();
             expect(res.body.meta.perPage).toBeDefined();
             expect(res.body.meta.totalPages).toBeDefined();
             expect(res.body.meta.totalResults).toBeDefined();
-            expect(res.body.groups[0].id).toBeDefined();
-            expect(res.body.groups[0].name).toBeDefined();
-            expect(res.body.groups[0].title).toBeDefined();
-            expect(res.body.groups[0].permissions).toBeDefined();
+            expect(res.body.permissions[0].id).toBeDefined();
+            expect(res.body.permissions[0].name).toBeDefined();
+            expect(res.body.permissions[0].title).toBeDefined();
+            expect(res.body.permissions[0].contentType).toBeDefined();
           });
       });
 
-      it('/ (GET) 200 admin user can read groups', () => {
+      it('/ (GET) 200 admin user can read permissions', () => {
         return request(app.getHttpServer())
-          .get(`/api/admin/groups`)
+          .get(`/api/admin/permissions`)
           .set('tnid', 'master')
           .set('Authorization', `JWT ${adminToken}`)
           .expect(200)
           .then(res => {
-            expect(res.body.groups).toBeDefined();
+            expect(res.body.permissions).toBeDefined();
             expect(res.body.meta).toBeDefined();
           });
       });
 
-      it('/ (GET) 200 inactive admin user can read groups', () => {
+      it('/ (GET) 200 inactive admin user can read permissions', () => {
         return request(app.getHttpServer())
-          .get(`/api/admin/groups`)
+          .get(`/api/admin/permissions`)
           .set('tnid', 'master')
           .set('Authorization', `JWT ${adminInactiveToken}`)
           .expect(200)
           .then(res => {
-            expect(res.body.groups).toBeDefined();
+            expect(res.body.permissions).toBeDefined();
             expect(res.body.meta).toBeDefined();
           });
       });
 
-      it('/ (GET) 200 staff user with permission can read group', () => {
+      it('/ (GET) 200 staff user with permission can read permission', () => {
         return request(app.getHttpServer())
           .post('/api/auth/signin')
           .set('tnid', 'master')
           .send({
-            email: 'readGroupUser@readGroupUser.com',
+            email: 'readPermissionUser@readPermissionUser.com',
             password: pass,
           })
           .expect(200)
           .then(res => {
             return request(app.getHttpServer())
-              .get(`/api/admin/groups`)
+              .get(`/api/admin/permissions`)
               .set('tnid', 'master')
               .set('Authorization', `JWT ${adminInactiveToken}`)
               .expect(200)
               .then(res => {
-                expect(res.body.groups).toBeDefined();
+                expect(res.body.permissions).toBeDefined();
                 expect(res.body.meta).toBeDefined();
               });
           });
@@ -675,14 +662,14 @@ describe('Group (e2e)', () => {
     describe('Unauthenticated', () => {
       it('/ (GET) 403 guest user cannot read user', () => {
         return request(app.getHttpServer())
-          .get(`/api/admin/groups`)
+          .get(`/api/admin/permissions`)
           .set('tnid', 'master')
           .expect(403);
       });
 
       it('/ (GET) 403 general user cannot read user', () => {
         return request(app.getHttpServer())
-          .get(`/api/admin/groups`)
+          .get(`/api/admin/permissions`)
           .set('tnid', 'master')
           .set('Authorization', `JWT ${staffToken}`)
           .expect(403);
