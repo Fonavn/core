@@ -7,7 +7,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
-@Entity('todo')
+@Entity('todos')
 export class TodoEntity extends BaseEntity {
   @PrimaryGeneratedColumn()
   id!: string;

@@ -3,11 +3,11 @@ import { Controller } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Crud, CrudController } from '@nestjsx/crud';
 import { InTodoDto } from './dto/in-todo.dto';
-import { TodoEntity } from './todo.entity';
-import { TodoService } from './todo.service';
+import { TodoEntity } from './todos.entity';
+import { TodoService } from './todos.service';
 
 @Permissions('change_profile')
-@ApiTags('todo')
+@ApiTags('todos')
 @Crud({
   model: {
     type: TodoEntity,
@@ -17,7 +17,7 @@ import { TodoService } from './todo.service';
     update: InTodoDto,
   },
 })
-@Controller('/todo')
+@Controller('/todos')
 export class TodoController implements CrudController<TodoEntity> {
   constructor(public service: TodoService) {}
 }

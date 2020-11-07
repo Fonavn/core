@@ -137,7 +137,7 @@ describe('Multi-tenant test (e2e)', () => {
 
     it('Cannot use other tenant-id', () => {
       return request(app.getHttpServer())
-        .get(`/api/todo`)
+        .get(`/api/todos`)
         .set('tnid', dbname2)
         .set('Authorization', `Bearer ${user1.token}`)
         .expect(403);
@@ -302,7 +302,7 @@ describe('Multi-tenant test (e2e)', () => {
         const completed = faker.random.boolean();
 
         await request(app.getHttpServer())
-          .post(`/api/todo`)
+          .post(`/api/todos`)
           .set('tnid', dbname1)
           .set('Authorization', `Bearer ${token1}`)
           .send({
@@ -312,7 +312,7 @@ describe('Multi-tenant test (e2e)', () => {
           .expect(201);
 
         await request(app.getHttpServer())
-          .get(`/api/todo/1`)
+          .get(`/api/todos/1`)
           .set('tnid', dbname1)
           .set('Authorization', `Bearer ${token1}`)
           .expect(200)
@@ -324,7 +324,7 @@ describe('Multi-tenant test (e2e)', () => {
 
       it('Should not return todos if use other tenant-id', () => {
         return request(app.getHttpServer())
-          .get(`/api/todo`)
+          .get(`/api/todos`)
           .set('tnid', dbname2)
           .set('Authorization', `Bearer ${token1}`)
           .expect(403);

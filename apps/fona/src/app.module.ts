@@ -10,7 +10,7 @@ import { CoreModule } from '@lib/core';
 import authCore from './config/auth-core';
 import { join } from 'path';
 import { WinstonModule } from 'nest-winston';
-import { TodoModule } from './todo/todo.module';
+import { TodoModule } from './todos/todos.module';
 import { TenantModule } from '@lib/tenant';
 import entities from './config/tenant-entity';
 import adminRoutes from './config/admin-route';
