@@ -15,12 +15,13 @@ import { TodoModule } from './todo/todo.module';
 import { TenantModule } from '@lib/tenant';
 import entities from './config/tenant-entity';
 import adminRoutes from './config/admin-route';
+import logger from './config/logger';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       envFilePath: join('./apps/fona/.env'),
-      load: [masterDatabase, authCore],
+      load: [masterDatabase, authCore, logger],
     }),
     WinstonModule.forRootAsync({
       imports: [ConfigModule],
