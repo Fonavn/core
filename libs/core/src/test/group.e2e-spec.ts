@@ -29,6 +29,7 @@ import { InGroupDto } from '../dto/in-group.dto';
 import { GroupSeed } from './seed/group.seed';
 import { Group } from '../entities/group.entity';
 import adminRoutes from '@app/fona/config/admin-route';
+import { DEFAULT_AUTH_CORE_CONFIG } from '@lib/auth/configs/core.config';
 
 jest.setTimeout(10000);
 describe('Group (e2e)', () => {
@@ -111,7 +112,7 @@ describe('Group (e2e)', () => {
             imports: [],
           },
           {
-            useFactory: () => ({ ...DEFAULT_CORE_CONFIG }),
+            useFactory: () => ({ ...DEFAULT_AUTH_CORE_CONFIG }),
             imports: [],
           },
         ),
@@ -127,7 +128,6 @@ describe('Group (e2e)', () => {
     // frequency use
     superToken = await request(app.getHttpServer())
       .post('/api/auth/signin')
-      .set('tnid', 'master')
       .send({
         email: 'super@super.com',
         password: pass,
@@ -135,7 +135,6 @@ describe('Group (e2e)', () => {
       .then(res => res.body.token);
     adminToken = await request(app.getHttpServer())
       .post('/api/auth/signin')
-      .set('tnid', 'master')
       .send({
         email: 'admin@admin.com',
         password: pass,
@@ -143,7 +142,6 @@ describe('Group (e2e)', () => {
       .then(res => res.body.token);
     staffToken = await request(app.getHttpServer())
       .post('/api/auth/signin')
-      .set('tnid', 'master')
       .send({
         email: 'user1@user1.com',
         password: pass,
@@ -151,7 +149,6 @@ describe('Group (e2e)', () => {
       .then(res => res.body.token);
     adminInactiveToken = await request(app.getHttpServer())
       .post('/api/auth/signin')
-      .set('tnid', 'master')
       .send({
         email: 'inactiveAdmin@inactiveAdmin.com',
         password: pass,
@@ -166,7 +163,6 @@ describe('Group (e2e)', () => {
         const title = faker.random.word();
         return request(app.getHttpServer())
           .post('/api/admin/groups')
-          .set('tnid', 'master')
           .set('Authorization', `JWT ${superToken}`)
           .send({
             name,
@@ -184,7 +180,6 @@ describe('Group (e2e)', () => {
         const title = faker.random.word();
         return request(app.getHttpServer())
           .post('/api/admin/groups')
-          .set('tnid', 'master')
           .set('Authorization', `JWT ${adminToken}`)
           .send({
             name,
@@ -202,7 +197,6 @@ describe('Group (e2e)', () => {
         const title = faker.random.word();
         return request(app.getHttpServer())
           .post('/api/admin/groups')
-          .set('tnid', 'master')
           .set('Authorization', `JWT ${adminInactiveToken}`)
           .send({
             name,
@@ -220,7 +214,6 @@ describe('Group (e2e)', () => {
         const title = faker.random.word();
         return request(app.getHttpServer())
           .post('/api/auth/signin')
-          .set('tnid', 'master')
           .send({
             email: 'addGroupUser@addGroupUser.com',
             password: pass,
@@ -228,7 +221,6 @@ describe('Group (e2e)', () => {
           .then(res => {
             return request(app.getHttpServer())
               .post('/api/admin/groups')
-              .set('tnid', 'master')
               .set('Authorization', `JWT ${res.body.token}`)
               .send({
                 name,
@@ -247,14 +239,12 @@ describe('Group (e2e)', () => {
       it('/ (POST) 403 guest user cannot create group', () => {
         return request(app.getHttpServer())
           .post('/api/admin/groups')
-          .set('tnid', 'master')
           .expect(403);
       });
 
       it('/ (POST) 403 general user cannot create group', () => {
         return request(app.getHttpServer())
           .post('/api/admin/groups')
-          .set('tnid', 'master')
           .set('Authorization', `JWT ${staffToken}`)
           .send({
             name: faker.name.firstName(),
@@ -272,7 +262,6 @@ describe('Group (e2e)', () => {
       const title = faker.random.word();
       group = await request(app.getHttpServer())
         .post('/api/admin/groups')
-        .set('tnid', 'master')
         .set('Authorization', `JWT ${superToken}`)
         .send({
           name,
@@ -291,7 +280,6 @@ describe('Group (e2e)', () => {
 
         return request(app.getHttpServer())
           .put(`/api/admin/groups/${group.id}`)
-          .set('tnid', 'master')
           .set('Authorization', `JWT ${superToken}`)
           .send({
             name,
@@ -310,7 +298,6 @@ describe('Group (e2e)', () => {
 
         return request(app.getHttpServer())
           .put(`/api/admin/groups/${group.id}`)
-          .set('tnid', 'master')
           .set('Authorization', `JWT ${adminToken}`)
           .send({
             name,
@@ -329,7 +316,6 @@ describe('Group (e2e)', () => {
 
         return request(app.getHttpServer())
           .put(`/api/admin/groups/${group.id}`)
-          .set('tnid', 'master')
           .set('Authorization', `JWT ${adminInactiveToken}`)
           .send({
             name,
@@ -345,7 +331,6 @@ describe('Group (e2e)', () => {
       it('/ (PUT) 200 staff user with permission can change user', () => {
         return request(app.getHttpServer())
           .post('/api/auth/signin')
-          .set('tnid', 'master')
           .send({
             email: 'changeGroupUser@changeGroupUser.com',
             password: pass,
@@ -357,7 +342,6 @@ describe('Group (e2e)', () => {
 
             return request(app.getHttpServer())
               .put(`/api/admin/groups/${group.id}`)
-              .set('tnid', 'master')
               .set('Authorization', `JWT ${adminInactiveToken}`)
               .send({
                 name,
@@ -376,7 +360,6 @@ describe('Group (e2e)', () => {
       it('/ (PUT) 403 guest user cannot change user', () => {
         return request(app.getHttpServer())
           .put('/api/admin/groups/3')
-          .set('tnid', 'master')
           .send({
             name: faker.name.firstName(),
             title: faker.random.word(),
@@ -387,7 +370,6 @@ describe('Group (e2e)', () => {
       it('/ (PUT) 403 general user cannot change user', () => {
         return request(app.getHttpServer())
           .put('/api/admin/groups/3')
-          .set('tnid', 'master')
           .set('Authorization', `JWT ${staffToken}`)
           .send({
             name: faker.name.firstName(),
@@ -406,7 +388,6 @@ describe('Group (e2e)', () => {
         const title = faker.random.word();
         group = await request(app.getHttpServer())
           .post('/api/admin/groups')
-          .set('tnid', 'master')
           .set('Authorization', `JWT ${superToken}`)
           .send({
             name,
@@ -421,13 +402,11 @@ describe('Group (e2e)', () => {
       it('/ (DELETE) 204 super user can delete group', () => {
         return request(app.getHttpServer())
           .delete(`/api/admin/groups/${group.id}`)
-          .set('tnid', 'master')
           .set('Authorization', `JWT ${superToken}`)
           .expect(204)
           .then(() => {
             return request(app.getHttpServer())
               .get(`/api/admin/groups/${group.id}`)
-              .set('tnid', 'master')
               .set('Authorization', `JWT ${superToken}`)
               .expect(404);
           });
@@ -436,13 +415,11 @@ describe('Group (e2e)', () => {
       it('/ (DELETE) 200 admin user can delete group', () => {
         return request(app.getHttpServer())
           .delete(`/api/admin/groups/${group.id}`)
-          .set('tnid', 'master')
           .set('Authorization', `JWT ${adminToken}`)
           .expect(204)
           .then(() => {
             return request(app.getHttpServer())
               .get(`/api/admin/groups/${group.id}`)
-              .set('tnid', 'master')
               .set('Authorization', `JWT ${superToken}`)
               .expect(404);
           });
@@ -451,13 +428,11 @@ describe('Group (e2e)', () => {
       it('/ (DELETE) 200 inactive admin user can delete group', () => {
         return request(app.getHttpServer())
           .delete(`/api/admin/groups/${group.id}`)
-          .set('tnid', 'master')
           .set('Authorization', `JWT ${adminInactiveToken}`)
           .expect(204)
           .then(() => {
             return request(app.getHttpServer())
               .get(`/api/admin/groups/${group.id}`)
-              .set('tnid', 'master')
               .set('Authorization', `JWT ${superToken}`)
               .expect(404);
           });
@@ -466,7 +441,6 @@ describe('Group (e2e)', () => {
       it('/ (DELETE) 200 staff user with permission can delete group', () => {
         return request(app.getHttpServer())
           .post('/api/auth/signin')
-          .set('tnid', 'master')
           .send({
             email: 'deleteGroupUser@deleteGroupUser.com',
             password: pass,
@@ -475,13 +449,11 @@ describe('Group (e2e)', () => {
           .then(res => {
             return request(app.getHttpServer())
               .delete(`/api/admin/groups/${group.id}`)
-              .set('tnid', 'master')
               .set('Authorization', `JWT ${res.body.token}`)
               .expect(204)
               .then(() => {
                 return request(app.getHttpServer())
                   .get(`/api/admin/groups/${group.id}`)
-                  .set('tnid', 'master')
                   .set('Authorization', `JWT ${superToken}`)
                   .expect(404);
               });
@@ -493,14 +465,12 @@ describe('Group (e2e)', () => {
       it('/ (DELETE) 403 guest user cannot delete group', () => {
         return request(app.getHttpServer())
           .delete('/api/admin/groups/3')
-          .set('tnid', 'master')
           .expect(403);
       });
 
       it('/ (DELETE) 403 general user cannot delete group', () => {
         return request(app.getHttpServer())
           .delete('/api/admin/groups/3')
-          .set('tnid', 'master')
           .set('Authorization', `JWT ${staffToken}`)
           .expect(403);
       });
@@ -512,7 +482,6 @@ describe('Group (e2e)', () => {
       it('/ (GET) 200 super user can read group', () => {
         return request(app.getHttpServer())
           .get(`/api/admin/groups/1`)
-          .set('tnid', 'master')
           .set('Authorization', `JWT ${superToken}`)
           .expect(200)
           .then(res => {
@@ -539,7 +508,6 @@ describe('Group (e2e)', () => {
       it('/ (GET) 200 admin user can read group', () => {
         return request(app.getHttpServer())
           .get(`/api/admin/groups/1`)
-          .set('tnid', 'master')
           .set('Authorization', `JWT ${adminToken}`)
           .expect(200)
           .then(res => {
@@ -552,7 +520,6 @@ describe('Group (e2e)', () => {
       it('/ (GET) 200 inactive admin user can read group', () => {
         return request(app.getHttpServer())
           .get(`/api/admin/groups/1`)
-          .set('tnid', 'master')
           .set('Authorization', `JWT ${adminInactiveToken}`)
           .expect(200)
           .then(res => {
@@ -565,7 +532,6 @@ describe('Group (e2e)', () => {
       it('/ (GET) 200 staff user with permission can read group', () => {
         return request(app.getHttpServer())
           .post('/api/auth/signin')
-          .set('tnid', 'master')
           .send({
             email: 'readGroupUser@readGroupUser.com',
             password: pass,
@@ -574,7 +540,6 @@ describe('Group (e2e)', () => {
           .then(res => {
             return request(app.getHttpServer())
               .get(`/api/admin/groups/1`)
-              .set('tnid', 'master')
               .set('Authorization', `JWT ${res.body.token}`)
               .expect(200)
               .then(res => {
@@ -590,14 +555,12 @@ describe('Group (e2e)', () => {
       it('/ (GET) 403 guest user cannot read group', () => {
         return request(app.getHttpServer())
           .get(`/api/admin/groups/1`)
-          .set('tnid', 'master')
           .expect(403);
       });
 
       it('/ (GET) 403 general user cannot read group', () => {
         return request(app.getHttpServer())
           .get(`/api/admin/groups/1`)
-          .set('tnid', 'master')
           .set('Authorization', `JWT ${staffToken}`)
           .expect(403);
       });
@@ -609,7 +572,6 @@ describe('Group (e2e)', () => {
       it('/ (GET) 200 super user can read groups', () => {
         return request(app.getHttpServer())
           .get(`/api/admin/groups`)
-          .set('tnid', 'master')
           .set('Authorization', `JWT ${superToken}`)
           .expect(200)
           .then(res => {
@@ -629,7 +591,6 @@ describe('Group (e2e)', () => {
       it('/ (GET) 200 admin user can read groups', () => {
         return request(app.getHttpServer())
           .get(`/api/admin/groups`)
-          .set('tnid', 'master')
           .set('Authorization', `JWT ${adminToken}`)
           .expect(200)
           .then(res => {
@@ -641,7 +602,6 @@ describe('Group (e2e)', () => {
       it('/ (GET) 200 inactive admin user can read groups', () => {
         return request(app.getHttpServer())
           .get(`/api/admin/groups`)
-          .set('tnid', 'master')
           .set('Authorization', `JWT ${adminInactiveToken}`)
           .expect(200)
           .then(res => {
@@ -653,7 +613,6 @@ describe('Group (e2e)', () => {
       it('/ (GET) 200 staff user with permission can read group', () => {
         return request(app.getHttpServer())
           .post('/api/auth/signin')
-          .set('tnid', 'master')
           .send({
             email: 'readGroupUser@readGroupUser.com',
             password: pass,
@@ -662,7 +621,6 @@ describe('Group (e2e)', () => {
           .then(res => {
             return request(app.getHttpServer())
               .get(`/api/admin/groups`)
-              .set('tnid', 'master')
               .set('Authorization', `JWT ${adminInactiveToken}`)
               .expect(200)
               .then(res => {
@@ -677,14 +635,12 @@ describe('Group (e2e)', () => {
       it('/ (GET) 403 guest user cannot read user', () => {
         return request(app.getHttpServer())
           .get(`/api/admin/groups`)
-          .set('tnid', 'master')
           .expect(403);
       });
 
       it('/ (GET) 403 general user cannot read user', () => {
         return request(app.getHttpServer())
           .get(`/api/admin/groups`)
-          .set('tnid', 'master')
           .set('Authorization', `JWT ${staffToken}`)
           .expect(403);
       });

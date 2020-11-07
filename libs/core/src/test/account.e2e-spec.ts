@@ -22,6 +22,7 @@ import { PassportModule } from '@nestjs/passport';
 import { BaseSeed } from './seed/base.seed';
 import { Console } from 'winston/lib/winston/transports';
 import adminRoutes from '@app/fona/config/admin-route';
+import { DEFAULT_AUTH_CORE_CONFIG } from '@lib/auth/configs/core.config';
 
 describe('AccountController (e2e)', () => {
   let app;
@@ -96,7 +97,7 @@ describe('AccountController (e2e)', () => {
             imports: [],
           },
           {
-            useFactory: () => ({ ...DEFAULT_CORE_CONFIG }),
+            useFactory: () => ({ ...DEFAULT_AUTH_CORE_CONFIG }),
             imports: [],
           },
         ),

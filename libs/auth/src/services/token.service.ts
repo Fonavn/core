@@ -15,6 +15,9 @@ export class TokenService {
     return sign(
       {
         id: user.id,
+        tenant: {
+          path: user.tenant.path,
+        },
         isStaff: user.isStaff,
         isActive: user.isActive,
         isSuperuser: user.isSuperuser,

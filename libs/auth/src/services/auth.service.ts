@@ -18,6 +18,8 @@ import { IFacebookConfig } from '../interfaces/facebook-config.interface';
 import { IGooglePlusConfig } from '../interfaces/google-plus-config.interface';
 import { AUTH_CORE_TOKEN } from '../configs/core.config';
 import { IAuthCoreConfig } from '../interfaces/auth-core.interface';
+import { TenantEntity } from '@lib/tenant/tenant.entity';
+import { DatabaseEntity } from '@lib/tenant/database/database.entity';
 @Injectable()
 export class AuthService {
   private localUri: string;
@@ -76,6 +78,14 @@ export class AuthService {
     const newUser = await plainToClass(User, options).setPassword(
       options.password,
     );
+    // Default tenant
+    newUser.tenant = new TenantEntity();
+    newUser.tenant.path = newUser.username;
+    newUser.tenant.name = newUser.username;
+    newUser.tenant.database = plainToClass(DatabaseEntity, {
+      database: newUser.username,
+      ...this.coreConfig.defaultDBConnOps,
+    });
     newUser.groups = [group];
     return this.usersService.create({ item: newUser });
   }

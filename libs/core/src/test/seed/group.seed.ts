@@ -1,6 +1,7 @@
 import { Group } from '@lib/core/entities/group.entity';
 import { Permission } from '@lib/core/entities/permission.entity';
 import { User } from '@lib/core/entities/user.entity';
+import { TenantEntity } from '@lib/tenant/tenant.entity';
 import { plainToClass } from 'class-transformer';
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
@@ -41,6 +42,13 @@ export class GroupSeed implements MigrationInterface {
       .findOneOrFail({
         where: {
           name: 'read_group',
+        },
+      });
+    const masterTenant = await queryRunner.manager
+      .getRepository(TenantEntity)
+      .findOneOrFail({
+        where: {
+          path: 'master',
         },
       });
     const gAddGroup = await queryRunner.manager
@@ -90,6 +98,7 @@ export class GroupSeed implements MigrationInterface {
           isSuperuser: false,
           isStaff: false,
           isActive: false,
+          tenant: masterTenant,
           groups: [gAdmin],
         },
         {
@@ -101,6 +110,7 @@ export class GroupSeed implements MigrationInterface {
           isSuperuser: false,
           isStaff: false,
           isActive: false,
+          tenant: masterTenant,
           groups: [gAddGroup],
         },
         {
@@ -112,6 +122,7 @@ export class GroupSeed implements MigrationInterface {
           isSuperuser: false,
           isStaff: false,
           isActive: false,
+          tenant: masterTenant,
           groups: [gChangeGroup],
         },
         {
@@ -123,6 +134,7 @@ export class GroupSeed implements MigrationInterface {
           isSuperuser: false,
           isStaff: false,
           isActive: false,
+          tenant: masterTenant,
           groups: [gDeleteGroup],
         },
         {
@@ -134,6 +146,7 @@ export class GroupSeed implements MigrationInterface {
           isSuperuser: false,
           isStaff: false,
           isActive: false,
+          tenant: masterTenant,
           groups: [gReadGroup],
         },
       ]),

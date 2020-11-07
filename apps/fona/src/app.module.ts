@@ -69,7 +69,7 @@ import adminRoutes from './config/admin-route';
       {
         imports: [ConfigModule],
         useFactory: (config: ConfigService) => {
-          return config.get('auth.jwtConf');
+          return config.get('auth.authCoreConf');
         },
         inject: [ConfigService],
       },

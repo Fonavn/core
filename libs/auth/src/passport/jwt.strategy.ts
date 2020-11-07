@@ -9,6 +9,7 @@ import { plainToClass } from 'class-transformer';
 import { Strategy } from 'passport-jwt';
 import { IJwtPayload } from '../interfaces/jwt-payload.interface';
 import { TokenService } from '../services/token.service';
+import { TENANT_ID_HEADER } from '@lib/tenant/const';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
@@ -42,6 +43,12 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
       // Logger.log(JSON.stringify(payload), JwtStrategy.name);
       // const { user } = await this.userService.findById({ id: payload.id });
       const user = plainToClass(User, payload);
+
+      // wrong tenant
+      if (req.headers[TENANT_ID_HEADER] !== user.tenant.path) {
+        throw new UnauthorizedException('Wrong tenantId');
+      }
+
       user.groups = user.groups.map(group =>
         this.groupsService.getGroupByName({ name: group.name }),
       );

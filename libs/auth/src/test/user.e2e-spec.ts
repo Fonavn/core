@@ -22,6 +22,7 @@ import * as faker from 'faker';
 import { Console } from 'winston/lib/winston/transports';
 import { CoreModule, CORE_CONFIG_TOKEN, DEFAULT_CORE_CONFIG } from '@lib/core';
 import adminRoutes from '@app/fona/config/admin-route';
+import { DEFAULT_AUTH_CORE_CONFIG } from '../configs/core.config';
 
 jest.setTimeout(10000);
 describe('User (e2e)', () => {
@@ -96,7 +97,7 @@ describe('User (e2e)', () => {
             imports: [],
           },
           {
-            useFactory: () => ({ ...DEFAULT_CORE_CONFIG }),
+            useFactory: () => ({ ...DEFAULT_AUTH_CORE_CONFIG }),
             imports: [],
           },
         ),

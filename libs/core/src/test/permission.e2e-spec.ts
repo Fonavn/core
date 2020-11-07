@@ -26,6 +26,7 @@ import { InPermissionDto } from '../dto/in-permission.dto';
 import { PermissionSeed } from './seed/permission.seed';
 import { Permission } from '../entities/permission.entity';
 import adminRoutes from '@app/fona/config/admin-route';
+import { DEFAULT_AUTH_CORE_CONFIG } from '@lib/auth/configs/core.config';
 
 jest.setTimeout(10000);
 describe('Permission (e2e)', () => {
@@ -108,7 +109,7 @@ describe('Permission (e2e)', () => {
             imports: [],
           },
           {
-            useFactory: () => ({ ...DEFAULT_CORE_CONFIG }),
+            useFactory: () => ({ ...DEFAULT_AUTH_CORE_CONFIG }),
             imports: [],
           },
         ),
@@ -124,7 +125,6 @@ describe('Permission (e2e)', () => {
     // frequency use
     superToken = await request(app.getHttpServer())
       .post('/api/auth/signin')
-      .set('tnid', 'master')
       .send({
         email: 'super@super.com',
         password: pass,
@@ -132,7 +132,6 @@ describe('Permission (e2e)', () => {
       .then(res => res.body.token);
     adminToken = await request(app.getHttpServer())
       .post('/api/auth/signin')
-      .set('tnid', 'master')
       .send({
         email: 'admin@admin.com',
         password: pass,
@@ -140,7 +139,6 @@ describe('Permission (e2e)', () => {
       .then(res => res.body.token);
     staffToken = await request(app.getHttpServer())
       .post('/api/auth/signin')
-      .set('tnid', 'master')
       .send({
         email: 'user1@user1.com',
         password: pass,
@@ -148,7 +146,6 @@ describe('Permission (e2e)', () => {
       .then(res => res.body.token);
     adminInactiveToken = await request(app.getHttpServer())
       .post('/api/auth/signin')
-      .set('tnid', 'master')
       .send({
         email: 'inactiveAdmin@inactiveAdmin.com',
         password: pass,
@@ -163,7 +160,6 @@ describe('Permission (e2e)', () => {
         const title = faker.random.word();
         return request(app.getHttpServer())
           .post('/api/admin/permissions')
-          .set('tnid', 'master')
           .set('Authorization', `JWT ${superToken}`)
           .send({
             name,
@@ -181,7 +177,6 @@ describe('Permission (e2e)', () => {
         const title = faker.random.word();
         return request(app.getHttpServer())
           .post('/api/admin/permissions')
-          .set('tnid', 'master')
           .set('Authorization', `JWT ${adminToken}`)
           .send({
             name,
@@ -199,7 +194,6 @@ describe('Permission (e2e)', () => {
         const title = faker.random.word();
         return request(app.getHttpServer())
           .post('/api/admin/permissions')
-          .set('tnid', 'master')
           .set('Authorization', `JWT ${adminInactiveToken}`)
           .send({
             name,
@@ -217,7 +211,6 @@ describe('Permission (e2e)', () => {
         const title = faker.random.word();
         return request(app.getHttpServer())
           .post('/api/auth/signin')
-          .set('tnid', 'master')
           .send({
             email: 'addPermissionUser@addPermissionUser.com',
             password: pass,
@@ -225,7 +218,6 @@ describe('Permission (e2e)', () => {
           .then(res => {
             return request(app.getHttpServer())
               .post('/api/admin/permissions')
-              .set('tnid', 'master')
               .set('Authorization', `JWT ${res.body.token}`)
               .send({
                 name,
@@ -244,14 +236,12 @@ describe('Permission (e2e)', () => {
       it('/ (POST) 403 guest user cannot create permission', () => {
         return request(app.getHttpServer())
           .post('/api/admin/permissions')
-          .set('tnid', 'master')
           .expect(403);
       });
 
       it('/ (POST) 403 general user cannot create permission', () => {
         return request(app.getHttpServer())
           .post('/api/admin/permissions')
-          .set('tnid', 'master')
           .set('Authorization', `JWT ${staffToken}`)
           .send({
             name: faker.name.firstName(),
@@ -269,7 +259,6 @@ describe('Permission (e2e)', () => {
       const title = faker.random.word();
       permission = await request(app.getHttpServer())
         .post('/api/admin/permissions')
-        .set('tnid', 'master')
         .set('Authorization', `JWT ${superToken}`)
         .send({
           name,
@@ -288,7 +277,6 @@ describe('Permission (e2e)', () => {
 
         return request(app.getHttpServer())
           .put(`/api/admin/permissions/${permission.id}`)
-          .set('tnid', 'master')
           .set('Authorization', `JWT ${superToken}`)
           .send({
             name,
@@ -307,7 +295,6 @@ describe('Permission (e2e)', () => {
 
         return request(app.getHttpServer())
           .put(`/api/admin/permissions/${permission.id}`)
-          .set('tnid', 'master')
           .set('Authorization', `JWT ${adminToken}`)
           .send({
             name,
@@ -326,7 +313,6 @@ describe('Permission (e2e)', () => {
 
         return request(app.getHttpServer())
           .put(`/api/admin/permissions/${permission.id}`)
-          .set('tnid', 'master')
           .set('Authorization', `JWT ${adminInactiveToken}`)
           .send({
             name,
@@ -342,7 +328,6 @@ describe('Permission (e2e)', () => {
       it('/ (PUT) 200 staff user with permission can change user', () => {
         return request(app.getHttpServer())
           .post('/api/auth/signin')
-          .set('tnid', 'master')
           .send({
             email: 'changePermissionUser@changePermissionUser.com',
             password: pass,
@@ -354,7 +339,6 @@ describe('Permission (e2e)', () => {
 
             return request(app.getHttpServer())
               .put(`/api/admin/permissions/${permission.id}`)
-              .set('tnid', 'master')
               .set('Authorization', `JWT ${adminInactiveToken}`)
               .send({
                 name,
@@ -373,7 +357,6 @@ describe('Permission (e2e)', () => {
       it('/ (PUT) 403 guest user cannot change user', () => {
         return request(app.getHttpServer())
           .put('/api/admin/permissions/3')
-          .set('tnid', 'master')
           .send({
             name: faker.name.firstName(),
             title: faker.random.word(),
@@ -384,7 +367,6 @@ describe('Permission (e2e)', () => {
       it('/ (PUT) 403 general user cannot change user', () => {
         return request(app.getHttpServer())
           .put('/api/admin/permissions/3')
-          .set('tnid', 'master')
           .set('Authorization', `JWT ${staffToken}`)
           .send({
             name: faker.name.firstName(),
@@ -403,7 +385,6 @@ describe('Permission (e2e)', () => {
         const title = faker.random.word();
         permission = await request(app.getHttpServer())
           .post('/api/admin/permissions')
-          .set('tnid', 'master')
           .set('Authorization', `JWT ${superToken}`)
           .send({
             name,
@@ -418,13 +399,11 @@ describe('Permission (e2e)', () => {
       it('/ (DELETE) 204 super user can delete permission', () => {
         return request(app.getHttpServer())
           .delete(`/api/admin/permissions/${permission.id}`)
-          .set('tnid', 'master')
           .set('Authorization', `JWT ${superToken}`)
           .expect(204)
           .then(() => {
             return request(app.getHttpServer())
               .get(`/api/admin/permissions/${permission.id}`)
-              .set('tnid', 'master')
               .set('Authorization', `JWT ${superToken}`)
               .expect(404);
           });
@@ -433,13 +412,11 @@ describe('Permission (e2e)', () => {
       it('/ (DELETE) 200 admin user can delete permission', () => {
         return request(app.getHttpServer())
           .delete(`/api/admin/permissions/${permission.id}`)
-          .set('tnid', 'master')
           .set('Authorization', `JWT ${adminToken}`)
           .expect(204)
           .then(() => {
             return request(app.getHttpServer())
               .get(`/api/admin/permissions/${permission.id}`)
-              .set('tnid', 'master')
               .set('Authorization', `JWT ${superToken}`)
               .expect(404);
           });
@@ -448,13 +425,11 @@ describe('Permission (e2e)', () => {
       it('/ (DELETE) 200 inactive admin user can delete permission', () => {
         return request(app.getHttpServer())
           .delete(`/api/admin/permissions/${permission.id}`)
-          .set('tnid', 'master')
           .set('Authorization', `JWT ${adminInactiveToken}`)
           .expect(204)
           .then(() => {
             return request(app.getHttpServer())
               .get(`/api/admin/permissions/${permission.id}`)
-              .set('tnid', 'master')
               .set('Authorization', `JWT ${superToken}`)
               .expect(404);
           });
@@ -463,7 +438,6 @@ describe('Permission (e2e)', () => {
       it('/ (DELETE) 200 staff user with permission can delete permission', () => {
         return request(app.getHttpServer())
           .post('/api/auth/signin')
-          .set('tnid', 'master')
           .send({
             email: 'deletePermissionUser@deletePermissionUser.com',
             password: pass,
@@ -472,13 +446,11 @@ describe('Permission (e2e)', () => {
           .then(res => {
             return request(app.getHttpServer())
               .delete(`/api/admin/permissions/${permission.id}`)
-              .set('tnid', 'master')
               .set('Authorization', `JWT ${res.body.token}`)
               .expect(204)
               .then(() => {
                 return request(app.getHttpServer())
                   .get(`/api/admin/permissions/${permission.id}`)
-                  .set('tnid', 'master')
                   .set('Authorization', `JWT ${superToken}`)
                   .expect(404);
               });
@@ -490,14 +462,12 @@ describe('Permission (e2e)', () => {
       it('/ (DELETE) 403 guest user cannot delete permission', () => {
         return request(app.getHttpServer())
           .delete('/api/admin/permissions/3')
-          .set('tnid', 'master')
           .expect(403);
       });
 
       it('/ (DELETE) 403 general user cannot delete permission', () => {
         return request(app.getHttpServer())
           .delete('/api/admin/permissions/3')
-          .set('tnid', 'master')
           .set('Authorization', `JWT ${staffToken}`)
           .expect(403);
       });
@@ -509,7 +479,6 @@ describe('Permission (e2e)', () => {
       it('/ (GET) 200 super user can read permission', () => {
         return request(app.getHttpServer())
           .get(`/api/admin/permissions/1`)
-          .set('tnid', 'master')
           .set('Authorization', `JWT ${superToken}`)
           .expect(200)
           .then(res => {
@@ -526,7 +495,6 @@ describe('Permission (e2e)', () => {
       it('/ (GET) 200 admin user can read permission', () => {
         return request(app.getHttpServer())
           .get(`/api/admin/permissions/1`)
-          .set('tnid', 'master')
           .set('Authorization', `JWT ${adminToken}`)
           .expect(200)
           .then(res => {
@@ -539,7 +507,6 @@ describe('Permission (e2e)', () => {
       it('/ (GET) 200 inactive admin user can read permission', () => {
         return request(app.getHttpServer())
           .get(`/api/admin/permissions/1`)
-          .set('tnid', 'master')
           .set('Authorization', `JWT ${adminInactiveToken}`)
           .expect(200)
           .then(res => {
@@ -552,7 +519,6 @@ describe('Permission (e2e)', () => {
       it('/ (GET) 200 staff user with permission can read permission', () => {
         return request(app.getHttpServer())
           .post('/api/auth/signin')
-          .set('tnid', 'master')
           .send({
             email: 'readPermissionUser@readPermissionUser.com',
             password: pass,
@@ -561,7 +527,6 @@ describe('Permission (e2e)', () => {
           .then(res => {
             return request(app.getHttpServer())
               .get(`/api/admin/permissions/1`)
-              .set('tnid', 'master')
               .set('Authorization', `JWT ${res.body.token}`)
               .expect(200)
               .then(res => {
@@ -577,14 +542,12 @@ describe('Permission (e2e)', () => {
       it('/ (GET) 403 guest user cannot read permission', () => {
         return request(app.getHttpServer())
           .get(`/api/admin/permissions/1`)
-          .set('tnid', 'master')
           .expect(403);
       });
 
       it('/ (GET) 403 general user cannot read permission', () => {
         return request(app.getHttpServer())
           .get(`/api/admin/permissions/1`)
-          .set('tnid', 'master')
           .set('Authorization', `JWT ${staffToken}`)
           .expect(403);
       });
@@ -596,7 +559,6 @@ describe('Permission (e2e)', () => {
       it('/ (GET) 200 super user can read permissions', () => {
         return request(app.getHttpServer())
           .get(`/api/admin/permissions`)
-          .set('tnid', 'master')
           .set('Authorization', `JWT ${superToken}`)
           .expect(200)
           .then(res => {
@@ -616,7 +578,6 @@ describe('Permission (e2e)', () => {
       it('/ (GET) 200 admin user can read permissions', () => {
         return request(app.getHttpServer())
           .get(`/api/admin/permissions`)
-          .set('tnid', 'master')
           .set('Authorization', `JWT ${adminToken}`)
           .expect(200)
           .then(res => {
@@ -628,7 +589,6 @@ describe('Permission (e2e)', () => {
       it('/ (GET) 200 inactive admin user can read permissions', () => {
         return request(app.getHttpServer())
           .get(`/api/admin/permissions`)
-          .set('tnid', 'master')
           .set('Authorization', `JWT ${adminInactiveToken}`)
           .expect(200)
           .then(res => {
@@ -640,7 +600,6 @@ describe('Permission (e2e)', () => {
       it('/ (GET) 200 staff user with permission can read permission', () => {
         return request(app.getHttpServer())
           .post('/api/auth/signin')
-          .set('tnid', 'master')
           .send({
             email: 'readPermissionUser@readPermissionUser.com',
             password: pass,
@@ -649,7 +608,6 @@ describe('Permission (e2e)', () => {
           .then(res => {
             return request(app.getHttpServer())
               .get(`/api/admin/permissions`)
-              .set('tnid', 'master')
               .set('Authorization', `JWT ${adminInactiveToken}`)
               .expect(200)
               .then(res => {
@@ -664,14 +622,12 @@ describe('Permission (e2e)', () => {
       it('/ (GET) 403 guest user cannot read user', () => {
         return request(app.getHttpServer())
           .get(`/api/admin/permissions`)
-          .set('tnid', 'master')
           .expect(403);
       });
 
       it('/ (GET) 403 general user cannot read user', () => {
         return request(app.getHttpServer())
           .get(`/api/admin/permissions`)
-          .set('tnid', 'master')
           .set('Authorization', `JWT ${staffToken}`)
           .expect(403);
       });

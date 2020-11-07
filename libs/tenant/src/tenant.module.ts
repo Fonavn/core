@@ -84,7 +84,8 @@ export class TenantModule {
         req.headers[TENANT_ID_HEADER] = MASTER_TNID;
         next();
       })
-      .forRoutes(...TenantModule.adminRoutes)
+      // hard code for now stupid
+      .forRoutes('admin/*', 'auth/*')
       .apply(async (req, res, next) => {
         // For regular routes
         if (req.headers[TENANT_ID_HEADER] === MASTER_TNID) {
@@ -141,7 +142,7 @@ export class TenantModule {
           }
         }
       })
-      .exclude(...TenantModule.adminRoutes, '/', '/health')
+      .exclude('api/admin/(.*)', 'api/auth/(.*)', '/', '/health')
       .forRoutes('*');
   }
 }

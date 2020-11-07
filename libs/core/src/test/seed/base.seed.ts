@@ -2,6 +2,7 @@ import { ContentType } from '@lib/core/entities/content-type.entity';
 import { Group } from '@lib/core/entities/group.entity';
 import { Permission } from '@lib/core/entities/permission.entity';
 import { User } from '@lib/core/entities/user.entity';
+import { TenantEntity } from '@lib/tenant/tenant.entity';
 import { plainToClass } from 'class-transformer';
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
@@ -148,6 +149,22 @@ export class BaseSeed implements MigrationInterface {
         permissions: pPermissions,
       }),
     );
+    const masterTenant = await queryRunner.manager
+      .getRepository<TenantEntity>(TenantEntity)
+      .save(
+        plainToClass(TenantEntity, {
+          name: 'master',
+          path: 'master',
+          database: {
+            type: 'postgres',
+            host: 'localhost',
+            port: 5432,
+            username: 'masterUsr',
+            password: 1,
+            database: 'masterDb',
+          },
+        }),
+      );
     const tempUser = new User();
     await queryRunner.manager.getRepository<User>(User).save(
       plainToClass(User, [
@@ -160,6 +177,7 @@ export class BaseSeed implements MigrationInterface {
           isSuperuser: false,
           isStaff: false,
           isActive: true,
+          tenant: masterTenant,
           groups: [gAdmin],
         },
         {
@@ -171,6 +189,7 @@ export class BaseSeed implements MigrationInterface {
           isSuperuser: false,
           isStaff: false,
           isActive: true,
+          tenant: masterTenant,
           groups: [gAdmin],
         },
         {
@@ -182,6 +201,7 @@ export class BaseSeed implements MigrationInterface {
           isSuperuser: false,
           isStaff: false,
           isActive: true,
+          tenant: masterTenant,
           groups: [gUser],
         },
         {
@@ -193,6 +213,7 @@ export class BaseSeed implements MigrationInterface {
           isSuperuser: false,
           isStaff: false,
           isActive: true,
+          tenant: masterTenant,
           groups: [gUser],
         },
         {
@@ -204,6 +225,7 @@ export class BaseSeed implements MigrationInterface {
           isSuperuser: false,
           isStaff: false,
           isActive: true,
+          tenant: masterTenant,
           groups: [lUser],
         },
         {
@@ -215,6 +237,7 @@ export class BaseSeed implements MigrationInterface {
           isSuperuser: false,
           isStaff: false,
           isActive: false,
+          tenant: masterTenant,
           groups: [gUser],
         },
         {
@@ -226,6 +249,7 @@ export class BaseSeed implements MigrationInterface {
           isSuperuser: false,
           isStaff: false,
           isActive: false,
+          tenant: masterTenant,
           groups: [lUser],
         },
       ]),
