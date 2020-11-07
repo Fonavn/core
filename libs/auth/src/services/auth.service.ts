@@ -19,7 +19,7 @@ import { IGooglePlusConfig } from '../interfaces/google-plus-config.interface';
 import { AUTH_CORE_TOKEN } from '../configs/core.config';
 import { IAuthCoreConfig } from '../interfaces/auth-core.interface';
 import { TenantEntity } from '@lib/tenant/tenant.entity';
-import { DatabaseEntity } from '@lib/tenant/database/database.entity';
+import { DatabaseEntity } from '@lib/tenant/databases/databases.entity';
 @Injectable()
 export class AuthService {
   private localUri: string;

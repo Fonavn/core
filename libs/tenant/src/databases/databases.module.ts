@@ -1,8 +1,8 @@
 import { forwardRef, Module } from '@nestjs/common';
-import { DatabaseService } from './database.service';
-import { DatabaseController } from './database.controller';
+import { DatabaseService } from './databases.service';
+import { DatabaseController } from './databases.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { DatabaseEntity } from './database.entity';
+import { DatabaseEntity } from './databases.entity';
 import { TenantModule } from '../tenant.module';
 
 @Module({

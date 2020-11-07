@@ -6,7 +6,7 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { DatabaseEntity } from './database/database.entity';
+import { DatabaseEntity } from './databases/databases.entity';
 
 @Entity('tenant')
 export class TenantEntity extends BaseEntity {

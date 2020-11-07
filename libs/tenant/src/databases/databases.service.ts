@@ -3,7 +3,7 @@ import { Connection } from 'typeorm';
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 import { TENANT_CONNECTION } from '@lib/tenant/const';
 import { TenantService } from '../tenant-service.decorator';
-import { DatabaseEntity } from './database.entity';
+import { DatabaseEntity } from './databases.entity';
 
 @TenantService()
 export class DatabaseService extends TypeOrmCrudService<DatabaseEntity> {

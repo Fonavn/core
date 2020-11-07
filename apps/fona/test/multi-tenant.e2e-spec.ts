@@ -117,7 +117,7 @@ describe('Multi-tenant test (e2e)', () => {
           expect(res.body.user.tenant.id).toBeDefined();
           expect(res.body.user.tenant.database).toBeUndefined();
           return request(app.getHttpServer())
-            .get(`/api/admin/tenant/${res.body.user.tenant.id}`)
+            .get(`/api/admin/tenants/${res.body.user.tenant.id}`)
             .set('Authorization', `Bearer ${superToken}`)
             .expect(200)
             .then(res => {
@@ -130,7 +130,7 @@ describe('Multi-tenant test (e2e)', () => {
   describe('Cannot set wrong header', () => {
     it('Cannot access admin route', () => {
       return request(app.getHttpServer())
-        .get(`/api/admin/tenant/1`)
+        .get(`/api/admin/tenants/1`)
         .set('Authorization', `Bearer ${user1.token}`)
         .expect(403);
     });
@@ -155,14 +155,14 @@ describe('Multi-tenant test (e2e)', () => {
 
       it('Use `Tenant` table in master DB', () => {
         return request(app.getHttpServer())
-          .get(`/api/admin/tenant`)
+          .get(`/api/admin/tenants`)
           .set('Authorization', `Bearer ${superToken}`)
           .expect(200);
       });
 
       it('Use `Database` table in master DB', () => {
         return request(app.getHttpServer())
-          .get(`/api/admin/database`)
+          .get(`/api/admin/databases`)
           .set('Authorization', `Bearer ${superToken}`)
           .expect(200);
       });
@@ -190,7 +190,7 @@ describe('Multi-tenant test (e2e)', () => {
 
       it('Use tenant database', () => {
         return request(app.getHttpServer())
-          .get(`/api/admin/tenant`)
+          .get(`/api/admin/tenants`)
           .set('Authorization', `Bearer ${superToken}`)
           .expect(200);
       });
@@ -219,14 +219,14 @@ describe('Multi-tenant test (e2e)', () => {
 
       it('Cannot use `Tenant` table in master DB', () => {
         return request(app.getHttpServer())
-          .get(`/api/admin/tenant`)
+          .get(`/api/admin/tenants`)
           .set('Authorization', `Bearer ${superTenantToken}`)
           .expect(403);
       });
 
       it('Cannot use `Database` table in master DB', () => {
         return request(app.getHttpServer())
-          .get(`/api/admin/database`)
+          .get(`/api/admin/databases`)
           .set('Authorization', `Bearer ${superTenantToken}`)
           .expect(403);
       });
@@ -254,7 +254,7 @@ describe('Multi-tenant test (e2e)', () => {
 
       it('Cannot use tenant database', () => {
         return request(app.getHttpServer())
-          .get(`/api/admin/tenant`)
+          .get(`/api/admin/tenants`)
           .set('Authorization', `Bearer ${superTenantToken}`)
           .expect(403);
       });

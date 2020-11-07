@@ -11,7 +11,7 @@ import { Roles } from './decorators/roles.decorator';
 import { TenantEntity } from './tenant.entity';
 import { TenantServicez } from './tenant.service';
 
-@ApiTags('tenant')
+@ApiTags('tenants')
 @ApiBearerAuth()
 @Roles('isSuperuser')
 @Crud({
@@ -19,7 +19,7 @@ import { TenantServicez } from './tenant.service';
     type: TenantEntity,
   },
 })
-@Controller('/admin/tenant')
+@Controller('/admin/tenants')
 export class TenantController implements CrudController<TenantEntity> {
   constructor(public service: TenantServicez) {}
 }

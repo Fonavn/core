@@ -10,7 +10,7 @@ import {
 import { REQUEST } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MASTER_TNID, TENANT_CONNECTION, TENANT_ID_HEADER } from './const';
-import { DatabaseModule } from './database/database.module';
+import { DatabaseModule } from './databases/databases.module';
 import { TenantEntity } from './tenant.entity';
 import { Connection, createConnection, getConnection } from 'typeorm';
 import { TenantController } from './tenant.controller';

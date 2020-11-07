@@ -1,6 +1,6 @@
 import { BaseEntity, DatabaseType, VarcharLength } from '@lib/shared';
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
-@Entity('database')
+@Entity('databases')
 export class DatabaseEntity extends BaseEntity {
   @PrimaryGeneratedColumn()
   id!: string;
