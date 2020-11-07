@@ -2,6 +2,7 @@ import { Permissions } from '@lib/core';
 import { Controller } from '@nestjs/common';
 import { ApiTags } from '@nestjs/swagger';
 import { Crud, CrudController } from '@nestjsx/crud';
+import { InTodoDto } from './dto/in-todo.dto';
 import { TodoEntity } from './todo.entity';
 import { TodoService } from './todo.service';
 
@@ -10,6 +11,10 @@ import { TodoService } from './todo.service';
 @Crud({
   model: {
     type: TodoEntity,
+  },
+  dto: {
+    create: InTodoDto,
+    update: InTodoDto,
   },
 })
 @Controller('/todo')

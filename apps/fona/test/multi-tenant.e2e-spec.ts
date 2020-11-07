@@ -9,12 +9,13 @@ import {
 import { AppModule } from './../src/app.module';
 import { BaseSeed } from './seed/base.seed';
 import * as faker from 'faker';
+import { TenantSeed } from './seed/tenant.seed';
 
 jest.setTimeout(10000);
 describe('Multi-tenant test (e2e)', () => {
   let app;
   let user1, token1;
-  let user2;
+  let user2, token2;
   const dbname1 = 'dbname1test';
   const dbname2 = 'dbname2test';
   let connectionOptions;
@@ -38,9 +39,11 @@ describe('Multi-tenant test (e2e)', () => {
 
     // Seed for master
     const baseSeed = new BaseSeed();
+    const tenantSeed = new TenantSeed();
     const connection: Connection = await createConnection(connectionOptions);
     const queryRunner = await connection.createQueryRunner();
     await baseSeed.up(queryRunner);
+    await tenantSeed.up(queryRunner);
     await connection.close();
 
     // clean tenant db
@@ -142,7 +145,7 @@ describe('Multi-tenant test (e2e)', () => {
   });
 
   describe('Select correct database', () => {
-    describe('Master database', () => {
+    describe('Use master database', () => {
       it('Use `User` table in master DB', () => {
         return request(app.getHttpServer())
           .get(`/api/admin/users`)
@@ -190,6 +193,106 @@ describe('Multi-tenant test (e2e)', () => {
           .get(`/api/admin/tenant`)
           .set('Authorization', `Bearer ${superToken}`)
           .expect(200);
+      });
+    });
+
+    describe('Cannot access master database event if he have admin permission', () => {
+      let superTenantToken;
+
+      beforeEach(async () => {
+        superTenantToken = await request(app.getHttpServer())
+          .post('/api/auth/signin')
+          .set('tnid', 'master')
+          .send({
+            email: 'superTenant@superTenant.com',
+            password: pass,
+          })
+          .then(res => res.body.token);
+      });
+
+      it('Cannot use `User` table in master DB', () => {
+        return request(app.getHttpServer())
+          .get(`/api/admin/users`)
+          .set('Authorization', `Bearer ${superTenantToken}`)
+          .expect(403);
+      });
+
+      it('Cannot use `Tenant` table in master DB', () => {
+        return request(app.getHttpServer())
+          .get(`/api/admin/tenant`)
+          .set('Authorization', `Bearer ${superTenantToken}`)
+          .expect(403);
+      });
+
+      it('Cannot use `Database` table in master DB', () => {
+        return request(app.getHttpServer())
+          .get(`/api/admin/database`)
+          .set('Authorization', `Bearer ${superTenantToken}`)
+          .expect(403);
+      });
+
+      it('Cannot use `Group` table in master DB', () => {
+        return request(app.getHttpServer())
+          .get(`/api/admin/groups`)
+          .set('Authorization', `Bearer ${superTenantToken}`)
+          .expect(403);
+      });
+
+      it('Cannot use `Permission` table in master DB', () => {
+        return request(app.getHttpServer())
+          .get(`/api/admin/permissions`)
+          .set('Authorization', `Bearer ${superTenantToken}`)
+          .expect(403);
+      });
+
+      it('Cannot use `ContentType` table in master DB', () => {
+        return request(app.getHttpServer())
+          .get(`/api/admin/content_types`)
+          .set('Authorization', `Bearer ${superTenantToken}`)
+          .expect(403);
+      });
+
+      it('Cannot use tenant database', () => {
+        return request(app.getHttpServer())
+          .get(`/api/admin/tenant`)
+          .set('Authorization', `Bearer ${superTenantToken}`)
+          .expect(403);
+      });
+    });
+
+    // describe('Cannot change tenant to prevent make it master user', () => {
+    //   // TODO
+    // });
+
+    // describe('Cannot update user to super user', () => {
+    //   // TODO
+    // });
+
+    describe('Cannot register with master tenant', () => {
+      it('Cannot be isSuperUser', async () => {
+        return request(app.getHttpServer())
+          .post('/api/auth/signup')
+          .send({
+            email: 'superTenant2@superTenant2.com',
+            username: 'dbname3test',
+            password: '12345678',
+            isSuperUser: true,
+          })
+          .expect(400);
+      });
+
+      it('Cannot be tenant', async () => {
+        return request(app.getHttpServer())
+          .post('/api/auth/signup')
+          .send({
+            email: 'superTenant2@superTenant2.com',
+            username: 'dbname3test',
+            password: '12345678',
+            tenant: {
+              id: 1,
+            },
+          })
+          .expect(400);
       });
     });
 

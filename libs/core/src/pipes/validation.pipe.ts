@@ -14,6 +14,8 @@ export class ValidationPipe implements PipeTransform<any> {
     const entity = plainToClass(metatype, value);
     const errors = await validate(entity, {
       validationError: { target: false },
+      whitelist: true,
+      forbidNonWhitelisted: true,
     });
     if (errors.length > 0) {
       throw new CustomValidationError(errors);
