@@ -1,6 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import * as request from 'supertest';
 import { AppModule } from './../src/app.module';
+import * as faker from 'faker';
 
 describe('AppController (e2e)', () => {
   let app;
@@ -14,10 +15,20 @@ describe('AppController (e2e)', () => {
     await app.init();
   });
 
-  it('/ (GET)', () => {
+  it('/health (GET)', () => {
     return request(app.getHttpServer())
-      .get('/')
-      .expect(200)
-      .expect('Hello World!');
+      .get('/health')
+      .expect(200);
+  });
+
+  // TODO dont have solution yet
+  it.skip('/random (GET)', () => {
+    return request(app.getHttpServer())
+      .get(`/${faker.random.word()}`)
+      .expect(404);
+  });
+
+  afterEach(async () => {
+    return app.close();
   });
 });

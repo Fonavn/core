@@ -1,7 +1,7 @@
 import { MASTER_TNID } from '@lib/tenant/const';
 import { ConnectionOptions } from 'typeorm';
-export default () => ({
-  database: {
+export default () => {
+  let config = {
     name: 'default',
     type: process.env.DB_TYPE,
     host: process.env.DB_HOST,
@@ -9,9 +9,18 @@ export default () => ({
     database: process.env.DB_DB_NAME,
     username: process.env.DB_USERNAME,
     password: process.env.DB_PASSWORD,
-    // entities: [TenantEntity, DatabaseEntity],
     autoLoadEntities: true,
     synchronize: false,
     logging: true,
-  } as ConnectionOptions,
-});
+  };
+
+  if (process.env.NODE_ENV === 'test') {
+    config = {
+      ...config,
+      database: 'fona-test',
+      logging: false,
+    };
+  }
+
+  return Object.freeze({ database: config });
+};

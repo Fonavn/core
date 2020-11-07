@@ -174,7 +174,7 @@ export class BaseSeed implements MigrationInterface {
           password: await tempUser.createPassword('12345678'),
           firstName: 'SuperFirstName',
           lastName: 'SuperLastName',
-          isSuperuser: false,
+          isSuperuser: true,
           isStaff: false,
           isActive: true,
           tenant: masterTenant,
