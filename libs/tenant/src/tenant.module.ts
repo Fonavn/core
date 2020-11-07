@@ -142,7 +142,7 @@ export class TenantModule {
           }
         }
       })
-      .exclude('api/admin/(.*)', 'api/auth/(.*)', '/', '/health')
+      .exclude('api/admin/(.*)', 'api/auth/(.*)', '/api', '/api/health')
       .forRoutes('*');
   }
 }

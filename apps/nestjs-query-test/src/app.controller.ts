@@ -7,9 +7,7 @@ export class AppController {
   constructor(
     private readonly appService: AppService,
     @Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly logger: Logger,
-  ) {
-    this.logger.setContext(AppController.name);
-  }
+  ) {}
 
   @Get()
   getHello(): string {

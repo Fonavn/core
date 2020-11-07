@@ -6,9 +6,7 @@ import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 export class RequestTimeMiddleware implements NestMiddleware {
   constructor(
     @Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly logger: Logger,
-  ) {
-    this.logger.setContext(RequestTimeMiddleware.name);
-  }
+  ) {}
 
   use(request: Request, response: Response, next: NextFunction): void {
     const { ip, method, path: url } = request;
@@ -20,11 +18,14 @@ export class RequestTimeMiddleware implements NestMiddleware {
       const { statusCode } = response;
       const contentLength = response.get('content-length');
 
-      this.logger.log({
-        level: 'info',
-        message: `${method} ${url} ${statusCode} ${contentLength} - ${userAgent} ${ip} ${new Date().getTime() -
-          startTime.getTime()}ms`,
-      });
+      this.logger.log(
+        {
+          level: 'info',
+          message: `${method} ${url} ${statusCode} ${contentLength} - ${userAgent} ${ip} ${new Date().getTime() -
+            startTime.getTime()}ms`,
+        },
+        RequestTimeMiddleware.name,
+      );
     });
 
     next();

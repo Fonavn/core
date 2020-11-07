@@ -34,9 +34,7 @@ export class AuthController {
     private readonly authService: AuthService,
     private readonly tokenService: TokenService,
     @Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly logger: Logger,
-  ) {
-    this.logger.setContext(AuthController.name);
-  }
+  ) {}
 
   @HttpCode(HttpStatus.OK)
   @Post('signin')
