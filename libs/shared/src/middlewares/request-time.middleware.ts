@@ -6,10 +6,10 @@ import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 export class RequestTimeMiddleware implements NestMiddleware {
   constructor(
     @Inject(WINSTON_MODULE_NEST_PROVIDER) private readonly logger: Logger,
-  ) {}
+  ) { }
 
   use(request: Request, response: Response, next: NextFunction): void {
-    const { ip, method, path: url } = request;
+    const { ip, method } = request;
     const userAgent = request.get('user-agent') || '';
     const startTime = new Date();
 
@@ -18,12 +18,11 @@ export class RequestTimeMiddleware implements NestMiddleware {
       const { statusCode } = response;
       const contentLength = response.get('content-length');
 
-      this.logger.log(
-        {
-          level: 'info',
-          message: `${method} ${url} ${statusCode} ${contentLength} - ${userAgent} ${ip} ${new Date().getTime() -
-            startTime.getTime()}ms`,
-        },
+      this.logger.log({
+        method, path: request.path, statusCode,
+        contentLength, userAgent, ip,
+        time: new Date().getTime() - startTime.getTime()
+      },
         RequestTimeMiddleware.name,
       );
     });
