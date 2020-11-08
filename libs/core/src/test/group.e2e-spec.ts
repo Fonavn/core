@@ -21,9 +21,6 @@ import * as winston from 'winston';
 import { PassportModule } from '@nestjs/passport';
 import { BaseSeed } from './seed/base.seed';
 import * as faker from 'faker';
-import { InCreateUserDto } from '../dto/in-create-user.dto';
-import { InUserDto } from '../dto/in-user.dto';
-import { User } from '../entities/user.entity';
 import { Console } from 'winston/lib/winston/transports';
 import { InGroupDto } from '../dto/in-group.dto';
 import { GroupSeed } from './seed/group.seed';
@@ -31,7 +28,7 @@ import { Group } from '../entities/group.entity';
 import adminRoutes from '@app/fona/config/admin-route';
 import { DEFAULT_AUTH_CORE_CONFIG } from '@lib/auth/configs/core.config';
 
-jest.setTimeout(10000);
+jest.setTimeout(15000);
 describe('Group (e2e)', () => {
   let app;
   let connectionOptions: ConnectionOptions;
@@ -40,9 +37,6 @@ describe('Group (e2e)', () => {
   let staffToken;
   let adminInactiveToken;
   let superToken;
-  let addUserToken;
-  let gAdmin;
-  let gUser;
   const pass = '12345678';
 
   beforeAll(async () => {

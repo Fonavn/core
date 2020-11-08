@@ -43,6 +43,14 @@ export class BaseSeed implements MigrationInterface {
           title: 'Database',
         }),
       );
+    const ctTenant = await queryRunner.manager
+      .getRepository<ContentType>(ContentType)
+      .save(
+        plainToClass(ContentType, {
+          name: 'tenant',
+          title: 'Tenant',
+        }),
+      );
     const pPermissions = await queryRunner.manager
       .getRepository<Permission>(Permission)
       .save(
@@ -151,6 +159,26 @@ export class BaseSeed implements MigrationInterface {
             title: 'Can read database',
             name: 'read_database',
             contentType: ctDatabase,
+          },
+          {
+            title: 'Can add tenant',
+            name: 'add_tenant',
+            contentType: ctTenant,
+          },
+          {
+            title: 'Can change tenant',
+            name: 'change_tenant',
+            contentType: ctTenant,
+          },
+          {
+            title: 'Can delete tenant',
+            name: 'delete_tenant',
+            contentType: ctTenant,
+          },
+          {
+            title: 'Can read tenant',
+            name: 'read_tenant',
+            contentType: ctTenant,
           },
         ]),
       );
