@@ -92,7 +92,7 @@ export class GroupSeed implements MigrationInterface {
         {
           username: 'inactiveAdmin',
           email: 'inactiveAdmin@inactiveAdmin.com',
-          password: await tempUser.createPassword('12345678'),
+          ...tempUser.createPassword('12345678'),
           firstName: 'InactiveAdminFirstName',
           lastName: 'InactiveAdminLastName',
           isSuperuser: false,
@@ -104,7 +104,7 @@ export class GroupSeed implements MigrationInterface {
         {
           username: 'addGroupUser',
           email: 'addGroupUser@addGroupUser.com',
-          password: await tempUser.createPassword('12345678'),
+          ...tempUser.createPassword('12345678'),
           firstName: 'AddGroupUserFirstName',
           lastName: 'AddGroupUserLastName',
           isSuperuser: false,
@@ -116,7 +116,7 @@ export class GroupSeed implements MigrationInterface {
         {
           username: 'changeGroupUser',
           email: 'changeGroupUser@changeGroupUser.com',
-          password: await tempUser.createPassword('12345678'),
+          ...tempUser.createPassword('12345678'),
           firstName: 'ChangeGroupUserFirstName',
           lastName: 'ChangeGroupUserLastName',
           isSuperuser: false,
@@ -128,7 +128,7 @@ export class GroupSeed implements MigrationInterface {
         {
           username: 'deleteGroupUser',
           email: 'deleteGroupUser@deleteGroupUser.com',
-          password: await tempUser.createPassword('12345678'),
+          ...tempUser.createPassword('12345678'),
           firstName: 'DeleteGroupUserFirstName',
           lastName: 'DeleteGroupUserLastName',
           isSuperuser: false,
@@ -140,7 +140,7 @@ export class GroupSeed implements MigrationInterface {
         {
           username: 'readGroupUser',
           email: 'readGroupUser@readGroupUser.com',
-          password: await tempUser.createPassword('12345678'),
+          ...tempUser.createPassword('12345678'),
           firstName: 'ReadGroupUserFirstName',
           lastName: 'ReadGroupUserLastName',
           isSuperuser: false,

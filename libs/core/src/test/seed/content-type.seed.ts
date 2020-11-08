@@ -92,7 +92,7 @@ export class ContentTypeSeed implements MigrationInterface {
         {
           username: 'inactiveAdmin',
           email: 'inactiveAdmin@inactiveAdmin.com',
-          password: await tempUser.createPassword('12345678'),
+          ...tempUser.createPassword('12345678'),
           firstName: 'InactiveAdminFirstName',
           lastName: 'InactiveAdminLastName',
           isSuperuser: false,
@@ -104,7 +104,7 @@ export class ContentTypeSeed implements MigrationInterface {
         {
           username: 'addContentTypeUser',
           email: 'addContentTypeUser@addContentTypeUser.com',
-          password: await tempUser.createPassword('12345678'),
+          ...tempUser.createPassword('12345678'),
           firstName: 'AddContentTypeUserFirstName',
           lastName: 'AddContentTypeUserLastName',
           isSuperuser: false,
@@ -116,7 +116,7 @@ export class ContentTypeSeed implements MigrationInterface {
         {
           username: 'changeContentTypeUser',
           email: 'changeContentTypeUser@changeContentTypeUser.com',
-          password: await tempUser.createPassword('12345678'),
+          ...tempUser.createPassword('12345678'),
           firstName: 'ChangeContentTypeUserFirstName',
           lastName: 'ChangeContentTypeUserLastName',
           isSuperuser: false,
@@ -128,7 +128,7 @@ export class ContentTypeSeed implements MigrationInterface {
         {
           username: 'deleteContentTypeUser',
           email: 'deleteContentTypeUser@deleteContentTypeUser.com',
-          password: await tempUser.createPassword('12345678'),
+          ...tempUser.createPassword('12345678'),
           firstName: 'DeleteContentTypeUserFirstName',
           lastName: 'DeleteContentTypeUserLastName',
           isSuperuser: false,
@@ -140,7 +140,7 @@ export class ContentTypeSeed implements MigrationInterface {
         {
           username: 'readContentTypeUser',
           email: 'readContentTypeUser@readContentTypeUser.com',
-          password: await tempUser.createPassword('12345678'),
+          ...tempUser.createPassword('12345678'),
           firstName: 'ReadContentTypeUserFirstName',
           lastName: 'ReadContentTypeUserLastName',
           isSuperuser: false,

@@ -1,10 +1,11 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { MoreThanOrEqual, Repository } from 'typeorm';
 import { User } from '../entities/user.entity';
 
 @Injectable()
@@ -195,5 +196,55 @@ export class UsersService {
         `User with username "${options.username}" not founded`,
       );
     }
+  }
+
+  async confirm(code: string) {
+    const user = await this.repository
+      .findOneOrFail({
+        where: {
+          isActive: false,
+          confirmCode: code,
+          expiredConfirm: MoreThanOrEqual(new Date()),
+        },
+      })
+      .catch(() => {
+        throw new BadRequestException();
+      });
+    return this.repository.update(user.id, {
+      isActive: true,
+      confirmCode: null,
+    });
+  }
+
+  async changePassword(id: string, oldPassword: string, newPassword: string) {
+    const user = await this.repository.findOneOrFail(id);
+    if (user.validatePassword(oldPassword)) {
+      user.setPassword(newPassword);
+      return this.repository.save(user);
+    } else {
+      throw new BadRequestException('Wrong password');
+    }
+  }
+
+  async resetPasswordInit(email: string) {
+    const user = await this.repository
+      .findOneOrFail({ where: { email } })
+      .catch(() => {
+        throw new BadRequestException('cannot find acccount with this email');
+      });
+    user.resetPwInit();
+    return this.repository.save(user);
+  }
+
+  async resetPassword(email: string, code: string, newPass: string) {
+    const user = await this.repository.findOneOrFail({
+      where: {
+        email,
+        resetPwCode: code,
+        expiredResetPw: MoreThanOrEqual(new Date()),
+      },
+    });
+    user.setPassword(newPass);
+    return this.repository.save(user);
   }
 }

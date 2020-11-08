@@ -92,7 +92,7 @@ export class DatabaseSeed implements MigrationInterface {
         {
           username: 'inactiveAdmin',
           email: 'inactiveAdmin@inactiveAdmin.com',
-          password: await tempUser.createPassword('12345678'),
+          ...tempUser.createPassword('12345678'),
           firstName: 'InactiveAdminFirstName',
           lastName: 'InactiveAdminLastName',
           isSuperuser: false,
@@ -104,7 +104,7 @@ export class DatabaseSeed implements MigrationInterface {
         {
           username: 'addDatabaseUser',
           email: 'addDatabaseUser@addDatabaseUser.com',
-          password: await tempUser.createPassword('12345678'),
+          ...tempUser.createPassword('12345678'),
           firstName: 'AddDatabaseUserFirstName',
           lastName: 'AddDatabaseUserLastName',
           isSuperuser: false,
@@ -116,7 +116,7 @@ export class DatabaseSeed implements MigrationInterface {
         {
           username: 'changeDatabaseUser',
           email: 'changeDatabaseUser@changeDatabaseUser.com',
-          password: await tempUser.createPassword('12345678'),
+          ...tempUser.createPassword('12345678'),
           firstName: 'ChangeDatabaseUserFirstName',
           lastName: 'ChangeDatabaseUserLastName',
           isSuperuser: false,
@@ -128,7 +128,7 @@ export class DatabaseSeed implements MigrationInterface {
         {
           username: 'deleteDatabaseUser',
           email: 'deleteDatabaseUser@deleteDatabaseUser.com',
-          password: await tempUser.createPassword('12345678'),
+          ...tempUser.createPassword('12345678'),
           firstName: 'DeleteDatabaseUserFirstName',
           lastName: 'DeleteDatabaseUserLastName',
           isSuperuser: false,
@@ -140,7 +140,7 @@ export class DatabaseSeed implements MigrationInterface {
         {
           username: 'readDatabaseUser',
           email: 'readDatabaseUser@readDatabaseUser.com',
-          password: await tempUser.createPassword('12345678'),
+          ...tempUser.createPassword('12345678'),
           firstName: 'ReadDatabaseUserFirstName',
           lastName: 'ReadDatabaseUserLastName',
           isSuperuser: false,

@@ -36,7 +36,7 @@ export class TenantSeed implements MigrationInterface {
         {
           username: 'superTenant',
           email: 'superTenant@superTenant.com',
-          password: await tempUser.createPassword('12345678'),
+          ...tempUser.createPassword('12345678'),
           firstName: 'superTenantFirstName',
           lastName: 'superTenantLastName',
           isSuperuser: true,
