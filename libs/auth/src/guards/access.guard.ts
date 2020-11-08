@@ -10,6 +10,7 @@ export class AccessGuard extends AuthGuard('jwt') {
   }
 
   async canActivate(context: ExecutionContext) {
+    // TODO why this
     try {
       await super.canActivate(context);
     } catch (error) {

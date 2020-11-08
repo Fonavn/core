@@ -10,7 +10,7 @@ import {
 import { REQUEST } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { MASTER_TNID, TENANT_CONNECTION, TENANT_ID_HEADER } from './const';
-import { DatabaseModule } from './database/database.module';
+import { DatabaseModule } from './databases/databases.module';
 import { TenantEntity } from './tenant.entity';
 import { Connection, createConnection, getConnection } from 'typeorm';
 import { TenantController } from './tenant.controller';
@@ -45,9 +45,11 @@ import { Response } from 'express';
 export class TenantModule {
   constructor(private readonly connection: Connection) {}
   static entities: any[];
+  static adminRoutes: string[];
 
-  static forRoot(entities: any): DynamicModule {
+  static forRoot(entities: any[], adminRoutes: string[]): DynamicModule {
     TenantModule.entities = entities;
+    TenantModule.adminRoutes = adminRoutes;
 
     return {
       module: TenantModule,
@@ -77,25 +79,19 @@ export class TenantModule {
 
   configure(consumer: MiddlewareConsumer): void {
     consumer
-      // .apply(async (req, res: Response, next) => {
-      /**
-       * Depend on strategy we have two options
-       *  (1) Users are in master
-       *  (2) Users are in tenant DB
-       *
-       * For now we implement (1) for simplify
-       */
-      // next();
-
-      // No need any more
-      // if (req.headers[TENANT_ID_HEADER] !== MASTER_TNID) {
-      //   res.send(404);
-      // } else {
-      //   next();
-      // }
-      // })
-      // .forRoutes('api/admin/(.*)')
+      .apply(async (req, res: Response, next) => {
+        // For admin routes
+        req.headers[TENANT_ID_HEADER] = MASTER_TNID;
+        next();
+      })
+      // hard code for now stupid
+      .forRoutes('admin/*', 'auth/*')
       .apply(async (req, res, next) => {
+        // For regular routes
+        if (req.headers[TENANT_ID_HEADER] === MASTER_TNID) {
+          res.send(400, 'invalid headers');
+        }
+
         const tenant: TenantEntity = await this.connection
           // TODO for future use host now use tenantId
           // .getRepository(TenantEntity).findOne(({ relations: ['database'], where: { host: req.headers.host } }));
@@ -146,7 +142,7 @@ export class TenantModule {
           }
         }
       })
-      .exclude('api/admin/(.*)')
-      .forRoutes('api/(.*)');
+      .exclude('api/admin/(.*)', 'api/auth/(.*)', '/api', '/api/health')
+      .forRoutes('*');
   }
 }

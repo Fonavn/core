@@ -6,7 +6,7 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { DatabaseEntity } from './database/database.entity';
+import { DatabaseEntity } from './databases/databases.entity';
 
 @Entity('tenant')
 export class TenantEntity extends BaseEntity {
@@ -46,9 +46,9 @@ export class TenantEntity extends BaseEntity {
     comment: "Company's description",
     nullable: true,
   })
-  description!: string;
+  description: string;
 
-  @OneToOne(() => DatabaseEntity)
+  @OneToOne(() => DatabaseEntity, { cascade: ['insert'] })
   @JoinColumn()
   database: DatabaseEntity;
 }

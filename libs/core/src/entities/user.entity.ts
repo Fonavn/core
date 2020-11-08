@@ -1,3 +1,4 @@
+import { TenantEntity } from '@lib/tenant/tenant.entity';
 import {
   IsEmail,
   IsNotEmpty,
@@ -12,8 +13,10 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  JoinColumn,
   JoinTable,
   ManyToMany,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -67,6 +70,14 @@ export class User {
 
   @Column({ type: Date, name: 'date_of_birth', nullable: true })
   dateOfBirth: Date = undefined;
+
+  @ManyToOne(() => TenantEntity, {
+    eager: true,
+    nullable: true,
+    cascade: ['insert'],
+  })
+  @JoinColumn({ name: 'tenant_id' })
+  tenant: TenantEntity = undefined;
 
   @ManyToMany(() => Group)
   @JoinTable({

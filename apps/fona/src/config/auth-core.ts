@@ -9,6 +9,7 @@ import {
   GOOGLE_PLUS_CONFIG_TOKEN,
   JWT_CONFIG_TOKEN,
 } from '@lib/auth';
+import { DEFAULT_AUTH_CORE_CONFIG } from '@lib/auth/configs/core.config';
 import {
   CORE_APP_FILTERS,
   CORE_APP_PIPES,
@@ -40,6 +41,16 @@ export default (): IConfig => ({
       client_id: process.env.GOOGLE_CLIENT_ID || 'none',
       client_secret: process.env.GOOGLE_CLIENT_SECRET || 'none',
       oauth_redirect_uri: process.env.GOOGLE_OAUTH_REDIRECT_URI || 'none',
+    },
+    authCoreConf: {
+      ...DEFAULT_AUTH_CORE_CONFIG,
+      defaultDBConnOps: {
+        type: 'postgres',
+        host: 'localhost',
+        port: 5432,
+        username: process.env.DB_USERNAME,
+        password: process.env.DB_PASSWORD,
+      },
     },
   },
 });

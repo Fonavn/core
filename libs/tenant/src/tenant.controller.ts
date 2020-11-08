@@ -8,18 +8,29 @@ import {
   ParsedRequest,
 } from '@nestjsx/crud';
 import { Roles } from './decorators/roles.decorator';
+import { InTenantDto } from './dto/in-tenant.dto';
+import { InUpdateTenantDto } from './dto/in-update-tenant.dto';
 import { TenantEntity } from './tenant.entity';
 import { TenantServicez } from './tenant.service';
 
-@ApiTags('tenant')
+@ApiTags('tenants')
 @ApiBearerAuth()
 @Roles('isSuperuser')
 @Crud({
   model: {
     type: TenantEntity,
   },
+  dto: {
+    create: InTenantDto,
+    update: InUpdateTenantDto,
+  },
+  query: {
+    join: {
+      database: { eager: true },
+    },
+  },
 })
-@Controller('/admin/tenant')
+@Controller('/admin/tenants')
 export class TenantController implements CrudController<TenantEntity> {
   constructor(public service: TenantServicez) {}
 }

@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TenantModule } from '@lib/tenant';
-import { DatabaseEntity } from '@lib/tenant/database/database.entity';
+import { DatabaseEntity } from '@lib/tenant/databases/databases.entity';
 import { TenantEntity } from '@lib/tenant/tenant.entity';
-import { TodoController } from './todo.controller';
-import { TodoEntity } from './todo.entity';
-import { TodoService } from './todo.service';
+import { TodoController } from './todos.controller';
+import { TodoEntity } from './todos.entity';
+import { TodoService } from './todos.service';
 
 @Module({
   imports: [

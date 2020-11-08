@@ -10,16 +10,18 @@ import { CoreModule } from '@lib/core';
 import authCore from './config/auth-core';
 import { join } from 'path';
 import { WinstonModule } from 'nest-winston';
-import { RequestTimeMiddleware } from './common/middlewares/request-time.middleware';
-import { TodoModule } from './todo/todo.module';
+import { TodoModule } from './todos/todos.module';
 import { TenantModule } from '@lib/tenant';
 import entities from './config/tenant-entity';
+import adminRoutes from './config/admin-route';
+import logger from './config/logger';
+import { RequestTimeMiddleware } from '@lib/shared';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       envFilePath: join('./apps/fona/.env'),
-      load: [masterDatabase, authCore],
+      load: [masterDatabase, authCore, logger],
     }),
     WinstonModule.forRootAsync({
       imports: [ConfigModule],
@@ -68,12 +70,12 @@ import entities from './config/tenant-entity';
       {
         imports: [ConfigModule],
         useFactory: (config: ConfigService) => {
-          return config.get('auth.jwtConf');
+          return config.get('auth.authCoreConf');
         },
         inject: [ConfigService],
       },
     ),
-    TenantModule.forRoot(entities),
+    TenantModule.forRoot(entities, adminRoutes),
     TodoModule,
   ],
   controllers: [AppController],

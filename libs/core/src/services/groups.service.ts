@@ -1,35 +1,19 @@
-import { TENANT_CONNECTION } from '@lib/tenant/const';
-import { TenantService } from '@lib/tenant/tenant-service.decorator';
-import { Inject, NotFoundException } from '@nestjs/common';
-import { ContextIdFactory, ModuleRef, REQUEST } from '@nestjs/core';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { plainToClass } from 'class-transformer';
-import { Connection, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Group } from '../entities/group.entity';
 
-@TenantService()
+@Injectable()
 export class GroupsService {
   items: Group[];
 
   constructor(
-    private moduleRef: ModuleRef,
-    @Inject(REQUEST) private request: Record<string, unknown>,
+    @InjectRepository(Group) private readonly repository: Repository<Group>,
   ) {}
-
-  async repository() {
-    const contextId = ContextIdFactory.getByRequest(this.request);
-    this.moduleRef.registerRequestByContextId(this.request, contextId);
-    const connection: Connection = await this.moduleRef.resolve(
-      TENANT_CONNECTION,
-      contextId,
-      { strict: false },
-    );
-    return await connection.getRepository(Group);
-  }
-
   async create(options: { item: Group }) {
     try {
-      options.item = await (await this.repository()).save(options.item);
+      options.item = await this.repository.save(options.item);
       return { group: options.item };
     } catch (error) {
       throw error;
@@ -39,7 +23,7 @@ export class GroupsService {
   async update(options: { id: number; item: Group }) {
     options.item.id = options.id;
     try {
-      options.item = await (await this.repository()).save(options.item);
+      options.item = await this.repository.save(options.item);
       return { group: options.item };
     } catch (error) {
       throw error;
@@ -48,10 +32,10 @@ export class GroupsService {
 
   async delete(options: { id: number }) {
     try {
-      let item = await (await this.repository()).findOneOrFail(options.id);
+      let item = await this.repository.findOneOrFail(options.id);
       item.permissions = [];
-      item = await (await this.repository()).save(item);
-      await (await this.repository()).delete(options.id);
+      item = await this.repository.save(item);
+      await this.repository.delete(options.id);
       return { group: null };
     } catch (error) {
       throw error;
@@ -60,7 +44,7 @@ export class GroupsService {
 
   async findById(options: { id: number }) {
     try {
-      const item = await (await this.repository()).findOneOrFail(options.id, {
+      const item = await this.repository.findOneOrFail(options.id, {
         relations: ['permissions'],
       });
       return { group: item };
@@ -76,7 +60,7 @@ export class GroupsService {
     sort?: string;
   }) {
     try {
-      let qb = (await this.repository()).createQueryBuilder('group');
+      let qb = this.repository.createQueryBuilder('group');
       qb = qb.leftJoinAndSelect('group.permissions', 'permission');
       qb = qb.leftJoinAndSelect('permission.contentType', 'contentType');
       if (options.q) {
@@ -135,7 +119,7 @@ export class GroupsService {
   async preloadAll() {
     if (!this.items) {
       try {
-        const groups = await (await this.repository())
+        const groups = await this.repository
           .createQueryBuilder('group')
           .leftJoinAndSelect('group.permissions', 'permission')
           .getMany();

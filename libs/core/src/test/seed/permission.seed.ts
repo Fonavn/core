@@ -1,6 +1,7 @@
 import { Group } from '@lib/core/entities/group.entity';
 import { Permission } from '@lib/core/entities/permission.entity';
 import { User } from '@lib/core/entities/user.entity';
+import { TenantEntity } from '@lib/tenant/tenant.entity';
 import { plainToClass } from 'class-transformer';
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
@@ -41,6 +42,13 @@ export class PermissionSeed implements MigrationInterface {
       .findOneOrFail({
         where: {
           name: 'read_permission',
+        },
+      });
+    const masterTenant = await queryRunner.manager
+      .getRepository(TenantEntity)
+      .findOneOrFail({
+        where: {
+          path: 'master',
         },
       });
     const gAddPermission = await queryRunner.manager
@@ -90,6 +98,7 @@ export class PermissionSeed implements MigrationInterface {
           isSuperuser: false,
           isStaff: false,
           isActive: false,
+          tenant: masterTenant,
           groups: [gAdmin],
         },
         {
@@ -101,6 +110,7 @@ export class PermissionSeed implements MigrationInterface {
           isSuperuser: false,
           isStaff: false,
           isActive: false,
+          tenant: masterTenant,
           groups: [gAddPermission],
         },
         {
@@ -112,6 +122,7 @@ export class PermissionSeed implements MigrationInterface {
           isSuperuser: false,
           isStaff: false,
           isActive: false,
+          tenant: masterTenant,
           groups: [gChangePermission],
         },
         {
@@ -123,6 +134,7 @@ export class PermissionSeed implements MigrationInterface {
           isSuperuser: false,
           isStaff: false,
           isActive: false,
+          tenant: masterTenant,
           groups: [gDeletePermission],
         },
         {
@@ -134,6 +146,7 @@ export class PermissionSeed implements MigrationInterface {
           isSuperuser: false,
           isStaff: false,
           isActive: false,
+          tenant: masterTenant,
           groups: [gReadPermission],
         },
       ]),

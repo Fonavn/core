@@ -45,6 +45,7 @@ export class AuthModule implements NestModule {
         ...fbConf.imports,
         ...ggConf.imports,
         ...jwtConf.imports,
+        ...authCoreConf.imports,
         TenantModule,
       ],
       controllers: [...AUTH_CONTROLLERS],
@@ -66,8 +67,8 @@ export class AuthModule implements NestModule {
         },
         {
           provide: AUTH_CORE_TOKEN,
-          useFactory: jwtConf.useFactory,
-          inject: jwtConf.inject,
+          useFactory: authCoreConf.useFactory,
+          inject: authCoreConf.inject,
         },
         ...AUTH_SERVICES,
         ...AUTH_APP_GUARDS,

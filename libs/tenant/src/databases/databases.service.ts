@@ -1,13 +1,13 @@
 import { Inject } from '@nestjs/common';
-import { TenantService } from '@lib/tenant/tenant-service.decorator';
 import { Connection } from 'typeorm';
-import { TodoEntity } from './todo.entity';
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 import { TENANT_CONNECTION } from '@lib/tenant/const';
+import { TenantService } from '../tenant-service.decorator';
+import { DatabaseEntity } from './databases.entity';
 
 @TenantService()
-export class TodoService extends TypeOrmCrudService<TodoEntity> {
+export class DatabaseService extends TypeOrmCrudService<DatabaseEntity> {
   constructor(@Inject(TENANT_CONNECTION) private connection: Connection) {
-    super(connection.getRepository(TodoEntity));
+    super(connection.getRepository(DatabaseEntity));
   }
 }

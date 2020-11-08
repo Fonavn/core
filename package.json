@@ -14,7 +14,7 @@
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
-    "test": "jest --runInBand",
+    "test": "jest --runInBand --bail",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
@@ -106,6 +106,8 @@
       "<rootDir>/apps/"
     ],
     "moduleNameMapper": {
+      "@app/fona/(.*)": "<rootDir>/apps/fona/src/$1",
+      "@app/fona": "<rootDir>/apps/fona/src",
       "@lib/auth/(.*)": "<rootDir>/libs/auth/src/$1",
       "@lib/auth": "<rootDir>/libs/auth/src",
       "@lib/core/(.*)": "<rootDir>/libs/core/src/$1",

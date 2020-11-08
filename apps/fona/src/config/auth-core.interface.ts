@@ -1,6 +1,6 @@
 import { IFacebookConfig, IGooglePlusConfig, IJwtConfig } from '@lib/auth';
+import { IAuthCoreConfig } from '@lib/auth/interfaces/auth-core.interface';
 import { ICoreConfig } from '@lib/core';
-import { Provider } from '@nestjs/common';
 
 export interface IConfig {
   core: ICoreConfig;
@@ -8,5 +8,6 @@ export interface IConfig {
     fbConf: IFacebookConfig;
     ggConf: IGooglePlusConfig;
     jwtConf: IJwtConfig;
+    authCoreConf: IAuthCoreConfig;
   };
 }

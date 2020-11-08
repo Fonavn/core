@@ -1,6 +1,6 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { Exclude, Type } from 'class-transformer';
-import { MaxLength } from 'class-validator';
+import { IsBoolean, IsOptional, MaxLength } from 'class-validator';
 import { GroupDto } from '../dto/group.dto';
 
 export class UserDto {
@@ -14,7 +14,9 @@ export class UserDto {
   @ApiPropertyOptional({ type: String })
   lastLogin: Date;
 
-  @ApiPropertyOptional({ type: Boolean })
+  @ApiPropertyOptional()
+  @IsBoolean()
+  @IsOptional()
   isSuperuser: boolean;
 
   @MaxLength(150)
@@ -33,10 +35,14 @@ export class UserDto {
   @ApiProperty()
   email: string;
 
-  @ApiPropertyOptional({ type: Boolean })
+  @ApiPropertyOptional()
+  @IsBoolean()
+  @IsOptional()
   isStaff: boolean;
 
-  @ApiPropertyOptional({ type: Boolean })
+  @ApiPropertyOptional()
+  @IsBoolean()
+  @IsOptional()
   isActive: boolean;
 
   @ApiProperty({ type: String })

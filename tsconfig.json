@@ -12,6 +12,12 @@
     "baseUrl": "./",
     "incremental": true,
     "paths": {
+      "@app/fona": [
+        "apps/fona/src"
+      ],
+      "@app/fona/*": [
+        "apps/fona/src/*"
+      ],
       "@lib/auth": [
         "libs/auth/src"
       ],
