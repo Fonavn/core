@@ -35,6 +35,14 @@ export class BaseSeed implements MigrationInterface {
     const ctUser = await queryRunner.manager
       .getRepository<ContentType>(ContentType)
       .save(plainToClass(ContentType, { name: 'user', title: 'User' }));
+    const ctDatabase = await queryRunner.manager
+      .getRepository<ContentType>(ContentType)
+      .save(
+        plainToClass(ContentType, {
+          name: 'database',
+          title: 'Database',
+        }),
+      );
     const pPermissions = await queryRunner.manager
       .getRepository<Permission>(Permission)
       .save(
@@ -123,6 +131,26 @@ export class BaseSeed implements MigrationInterface {
             title: 'Can change profile',
             name: 'change_profile',
             contentType: ctUser,
+          },
+          {
+            title: 'Can add database',
+            name: 'add_database',
+            contentType: ctDatabase,
+          },
+          {
+            title: 'Can change database',
+            name: 'change_database',
+            contentType: ctDatabase,
+          },
+          {
+            title: 'Can delete database',
+            name: 'delete_database',
+            contentType: ctDatabase,
+          },
+          {
+            title: 'Can read database',
+            name: 'read_database',
+            contentType: ctDatabase,
           },
         ]),
       );

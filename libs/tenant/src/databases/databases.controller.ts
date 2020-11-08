@@ -4,6 +4,8 @@ import { Crud, CrudController } from '@nestjsx/crud';
 import { Roles } from '../decorators/roles.decorator';
 import { DatabaseEntity } from './databases.entity';
 import { DatabaseService } from './databases.service';
+import { InDatabaseDto } from './dto/in-database.dto';
+import { InUpdateDatabaseDto } from './dto/in-update-database.dto';
 
 @ApiTags('databases')
 @ApiBearerAuth()
@@ -11,6 +13,10 @@ import { DatabaseService } from './databases.service';
 @Crud({
   model: {
     type: DatabaseEntity,
+  },
+  dto: {
+    create: InDatabaseDto,
+    update: InUpdateDatabaseDto,
   },
 })
 @Controller('/admin/databases')
