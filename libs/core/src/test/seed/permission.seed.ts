@@ -92,7 +92,7 @@ export class PermissionSeed implements MigrationInterface {
         {
           username: 'inactiveAdmin',
           email: 'inactiveAdmin@inactiveAdmin.com',
-          password: await tempUser.createPassword('12345678'),
+          ...tempUser.createPassword('12345678'),
           firstName: 'InactiveAdminFirstName',
           lastName: 'InactiveAdminLastName',
           isSuperuser: false,
@@ -104,7 +104,7 @@ export class PermissionSeed implements MigrationInterface {
         {
           username: 'addPermissionUser',
           email: 'addPermissionUser@addPermissionUser.com',
-          password: await tempUser.createPassword('12345678'),
+          ...tempUser.createPassword('12345678'),
           firstName: 'AddPermissionUserFirstName',
           lastName: 'AddPermissionUserLastName',
           isSuperuser: false,
@@ -116,7 +116,7 @@ export class PermissionSeed implements MigrationInterface {
         {
           username: 'changePermissionUser',
           email: 'changePermissionUser@changePermissionUser.com',
-          password: await tempUser.createPassword('12345678'),
+          ...tempUser.createPassword('12345678'),
           firstName: 'ChangePermissionUserFirstName',
           lastName: 'ChangePermissionUserLastName',
           isSuperuser: false,
@@ -128,7 +128,7 @@ export class PermissionSeed implements MigrationInterface {
         {
           username: 'deletePermissionUser',
           email: 'deletePermissionUser@deletePermissionUser.com',
-          password: await tempUser.createPassword('12345678'),
+          ...tempUser.createPassword('12345678'),
           firstName: 'DeletePermissionUserFirstName',
           lastName: 'DeletePermissionUserLastName',
           isSuperuser: false,
@@ -140,7 +140,7 @@ export class PermissionSeed implements MigrationInterface {
         {
           username: 'readPermissionUser',
           email: 'readPermissionUser@readPermissionUser.com',
-          password: await tempUser.createPassword('12345678'),
+          ...tempUser.createPassword('12345678'),
           firstName: 'ReadPermissionUserFirstName',
           lastName: 'ReadPermissionUserLastName',
           isSuperuser: false,

@@ -90,7 +90,7 @@ export class UserSeed implements MigrationInterface {
         {
           username: 'user6',
           email: 'user6@user6.com',
-          password: await tempUser.createPassword('12345678'),
+          ...tempUser.createPassword('12345678'),
           firstName: 'User6FirstName',
           lastName: 'User6LastName',
           isSuperuser: false,
@@ -102,7 +102,7 @@ export class UserSeed implements MigrationInterface {
         {
           username: 'addUser',
           email: 'addUser@addUser.com',
-          password: await tempUser.createPassword('12345678'),
+          ...tempUser.createPassword('12345678'),
           firstName: 'AddUserFirstName',
           lastName: 'AddUserLastName',
           isSuperuser: false,
@@ -114,7 +114,7 @@ export class UserSeed implements MigrationInterface {
         {
           username: 'changeUser',
           email: 'changeUser@changeUser.com',
-          password: await tempUser.createPassword('12345678'),
+          ...tempUser.createPassword('12345678'),
           firstName: 'ChangeUserFirstName',
           lastName: 'ChangeUserLastName',
           isSuperuser: false,
@@ -126,7 +126,7 @@ export class UserSeed implements MigrationInterface {
         {
           username: 'deleteUser',
           email: 'deleteUser@deleteUser.com',
-          password: await tempUser.createPassword('12345678'),
+          ...tempUser.createPassword('12345678'),
           firstName: 'DeleteUserFirstName',
           lastName: 'DeleteUserLastName',
           isSuperuser: false,
@@ -138,7 +138,7 @@ export class UserSeed implements MigrationInterface {
         {
           username: 'readUser',
           email: 'readUser@readUser.com',
-          password: await tempUser.createPassword('12345678'),
+          ...tempUser.createPassword('12345678'),
           firstName: 'ReadUserFirstName',
           lastName: 'ReadUserLastName',
           isSuperuser: false,

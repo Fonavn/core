@@ -138,6 +138,13 @@ describe('User (e2e)', () => {
             expect(res.body.user.firstName).toBeDefined();
             expect(res.body.user.lastName).toBeDefined();
             expect(res.body.user.email).toBeDefined();
+            // Should not included
+            expect(res.body.user.salt).toBeUndefined();
+            expect(res.body.user.confirmCode).toBeUndefined();
+            expect(res.body.user.expiredConfirm).toBeUndefined();
+            expect(res.body.user.resetPwCode).toBeUndefined();
+            expect(res.body.user.expiredResetPw).toBeUndefined();
+
             expect(res.body.user.groups).toBeDefined();
             expect(res.body.user.groups[0]).toBeDefined();
             expect(res.body.user.groups[0].id).toBeDefined();

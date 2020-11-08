@@ -45,7 +45,10 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
       const user = plainToClass(User, payload);
 
       // wrong tenant
-      if (req.headers[TENANT_ID_HEADER] !== user.tenant.path) {
+      if (
+        req.headers[TENANT_ID_HEADER] !== user.tenant.path &&
+        req.headers[TENANT_ID_HEADER] !== 'master'
+      ) {
         throw new UnauthorizedException('Wrong tenantId');
       }
 

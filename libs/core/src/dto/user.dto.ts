@@ -11,6 +11,21 @@ export class UserDto {
   @ApiPropertyOptional()
   password: string;
 
+  @Exclude()
+  salt: string;
+
+  @Exclude()
+  confirmCode: string;
+
+  @Exclude()
+  expiredConfirm: Date;
+
+  @Exclude()
+  resetPwCode: string;
+
+  @Exclude()
+  expiredResetPw: string;
+
   @ApiPropertyOptional({ type: String })
   lastLogin: Date;
 

@@ -92,7 +92,7 @@ export class TenantSeed implements MigrationInterface {
         {
           username: 'inactiveAdmin',
           email: 'inactiveAdmin@inactiveAdmin.com',
-          password: await tempUser.createPassword('12345678'),
+          ...tempUser.createPassword('12345678'),
           firstName: 'InactiveAdminFirstName',
           lastName: 'InactiveAdminLastName',
           isSuperuser: false,
@@ -104,7 +104,7 @@ export class TenantSeed implements MigrationInterface {
         {
           username: 'addTenantUser',
           email: 'addTenantUser@addTenantUser.com',
-          password: await tempUser.createPassword('12345678'),
+          ...tempUser.createPassword('12345678'),
           firstName: 'AddTenantUserFirstName',
           lastName: 'AddTenantUserLastName',
           isSuperuser: false,
@@ -116,7 +116,7 @@ export class TenantSeed implements MigrationInterface {
         {
           username: 'changeTenantUser',
           email: 'changeTenantUser@changeTenantUser.com',
-          password: await tempUser.createPassword('12345678'),
+          ...tempUser.createPassword('12345678'),
           firstName: 'ChangeTenantUserFirstName',
           lastName: 'ChangeTenantUserLastName',
           isSuperuser: false,
@@ -128,7 +128,7 @@ export class TenantSeed implements MigrationInterface {
         {
           username: 'deleteTenantUser',
           email: 'deleteTenantUser@deleteTenantUser.com',
-          password: await tempUser.createPassword('12345678'),
+          ...tempUser.createPassword('12345678'),
           firstName: 'DeleteTenantUserFirstName',
           lastName: 'DeleteTenantUserLastName',
           isSuperuser: false,
@@ -140,7 +140,7 @@ export class TenantSeed implements MigrationInterface {
         {
           username: 'readTenantUser',
           email: 'readTenantUser@readTenantUser.com',
-          password: await tempUser.createPassword('12345678'),
+          ...tempUser.createPassword('12345678'),
           firstName: 'ReadTenantUserFirstName',
           lastName: 'ReadTenantUserLastName',
           isSuperuser: false,
