@@ -23,11 +23,14 @@ import { Console } from 'winston/lib/winston/transports';
 import { CoreModule, CORE_CONFIG_TOKEN, DEFAULT_CORE_CONFIG } from '@lib/core';
 import adminRoutes from '@app/fona/config/admin-route';
 import { DEFAULT_AUTH_CORE_CONFIG } from '../configs/core.config';
+import { SendGridModule } from '@ntegral/nestjs-sendgrid';
+import { MailModule } from '@lib/mail';
 
 jest.setTimeout(10000);
 describe('User (e2e)', () => {
   let app;
   let connectionOptions: ConnectionOptions;
+  let sendGridServiceSpy: any;
   // Create data
   let superToken;
   const pass = '12345678';
@@ -66,6 +69,26 @@ describe('User (e2e)', () => {
           format: winston.format.json(),
           transports: [new Console()],
         }),
+        MailModule.forRootAsync(
+          {
+            imports: [],
+            useFactory: () => ({
+              apiKey: 'SG.dummykey',
+            }),
+          },
+          {
+            imports: [],
+            useFactory: () => ({
+              from: faker.internet.email(),
+              verifyHost: faker.internet.url(),
+              templates: {
+                confirm: faker.random.alphaNumeric(10),
+                forgetPassword: faker.random.alphaNumeric(10),
+                passwordChanged: faker.random.alphaNumeric(10),
+              },
+            }),
+          },
+        ),
         TypeOrmModule.forRoot(connectionOptions),
         PassportModule.register({ defaultStrategy: 'jwt' }),
         CoreModule.forRoot({
@@ -106,9 +129,15 @@ describe('User (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
+    const sendGridService = moduleFixture.get('SendGridToken');
     app.setGlobalPrefix('api');
 
     await app.init();
+
+    // mock
+    sendGridServiceSpy = jest
+      .spyOn(sendGridService, 'send')
+      .mockImplementation();
 
     // frequency use
     superToken = await request(app.getHttpServer())

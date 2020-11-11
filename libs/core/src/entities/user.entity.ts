@@ -38,7 +38,7 @@ export class User {
   @IsOptional()
   password: string = undefined;
 
-  @Column({ length: 128 })
+  @Column({ length: 128, nullable: true })
   @MaxLength(128)
   @IsOptional()
   salt: string = undefined;

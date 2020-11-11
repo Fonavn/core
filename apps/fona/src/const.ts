@@ -1,0 +1,1 @@
+export const EMAIL_CONFIG_TOKEN = 'EMAIL_CONFIG_TOKEN';

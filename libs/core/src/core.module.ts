@@ -1,6 +1,7 @@
 import { TenantModule } from '@lib/tenant';
 import { DynamicModule, Module, Provider } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { SendGridModule } from '@ntegral/nestjs-sendgrid';
 import { CORE_CONFIG_TOKEN } from './configs/core.config';
 import { CORE_CONTROLLERS } from './controllers';
 import { CORE_ENTITIES } from './entities';
@@ -10,7 +11,7 @@ import { CORE_APP_PIPES } from './pipes';
 import { CORE_SERVICES } from './services';
 
 @Module({
-  imports: [TenantModule],
+  imports: [TenantModule, SendGridModule],
   exports: [...CORE_SERVICES],
 })
 export class CoreModule {
@@ -18,6 +19,7 @@ export class CoreModule {
     return {
       module: CoreModule,
       imports: [
+        SendGridModule,
         TypeOrmModule.forFeature([...CORE_ENTITIES]),
         ...coreConf.imports,
       ],
@@ -49,7 +51,7 @@ export class CoreModule {
     const providers = options && options.providers ? options.providers : [];
     return {
       module: CoreModule,
-      imports: [TypeOrmModule.forFeature([...CORE_ENTITIES])],
+      imports: [SendGridModule, TypeOrmModule.forFeature([...CORE_ENTITIES])],
       controllers: [...CORE_CONTROLLERS],
       providers: [
         ...providers,
@@ -57,6 +59,7 @@ export class CoreModule {
         ...CORE_APP_FILTERS,
         ...CORE_APP_PIPES,
       ],
+      global: true,
     };
   }
 }

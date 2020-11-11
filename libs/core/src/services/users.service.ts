@@ -1,17 +1,29 @@
+import { EMAIL_CONFIG_TOKEN } from '@app/fona/const';
+import { IMailConfig } from '@lib/mail';
 import {
   BadRequestException,
   ConflictException,
+  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { MoreThanOrEqual, Repository } from 'typeorm';
+import { InjectSendGrid, SendGridService } from '@ntegral/nestjs-sendgrid';
+import {
+  EntityManager,
+  MoreThanOrEqual,
+  Repository,
+  Transaction,
+  TransactionManager,
+} from 'typeorm';
 import { User } from '../entities/user.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User) private readonly repository: Repository<User>,
+    @InjectSendGrid() private readonly mailClient: SendGridService,
+    @Inject(EMAIL_CONFIG_TOKEN) private readonly mailConfig: IMailConfig,
   ) {}
 
   async assertUsernameAndEmail(options: {
@@ -47,15 +59,31 @@ export class UsersService {
     }
   }
 
-  async create(options: { item: User }) {
+  @Transaction()
+  async create(
+    options: { item: User },
+    @TransactionManager() manager?: EntityManager,
+  ) {
     try {
       await this.assertUsernameAndEmail({
-        id: options.item.id,
         email: options.item.email,
         username: options.item.username,
       });
-      options.item = await this.repository.save(options.item);
-      const { user } = await this.findById({ id: options.item.id });
+      options.item = await manager.save(options.item);
+      const user = await manager
+        .getRepository(User)
+        .findOneOrFail(options.item.id, {
+          relations: ['groups', 'groups.permissions'],
+        });
+      await this.mailClient.send({
+        to: user.email,
+        from: this.mailConfig.from,
+        templateId: this.mailConfig.templates.confirm,
+        dynamicTemplateData: {
+          link: `${this.mailConfig.verifyHost}/confirm?code=${user.confirmCode}`,
+          expiredDate: user.expiredConfirm,
+        },
+      });
       return { user };
     } catch (error) {
       throw error;
@@ -226,17 +254,36 @@ export class UsersService {
     }
   }
 
-  async resetPasswordInit(email: string) {
+  @Transaction()
+  async resetPasswordInit(
+    email: string,
+    @TransactionManager() manager?: EntityManager,
+  ) {
     const user = await this.repository
       .findOneOrFail({ where: { email } })
       .catch(() => {
         throw new BadRequestException('cannot find acccount with this email');
       });
     user.resetPwInit();
-    return this.repository.save(user);
+    await this.repository.save(user);
+    return this.mailClient.send({
+      to: user.email,
+      from: this.mailConfig.from,
+      templateId: this.mailConfig.templates.forgetPassword,
+      dynamicTemplateData: {
+        link: `${this.mailConfig.verifyHost}/reset?code=${user.resetPwCode}`,
+        expiredDate: user.expiredResetPw,
+      },
+    });
   }
 
-  async resetPassword(email: string, code: string, newPass: string) {
+  @Transaction()
+  async resetPassword(
+    email: string,
+    code: string,
+    newPass: string,
+    @TransactionManager() manager?: EntityManager,
+  ) {
     const user = await this.repository.findOneOrFail({
       where: {
         email,
@@ -245,6 +292,14 @@ export class UsersService {
       },
     });
     user.setPassword(newPass);
-    return this.repository.save(user);
+    await this.repository.save(user);
+    return this.mailClient.send({
+      to: user.email,
+      from: this.mailConfig.from,
+      templateId: this.mailConfig.templates.passwordChanged,
+      dynamicTemplateData: {
+        link: `${this.mailConfig.verifyHost}`,
+      },
+    });
   }
 }

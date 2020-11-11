@@ -41,6 +41,12 @@
       ],
       "@lib/shared/*": [
         "libs/shared/src/*"
+      ],
+      "@lib/mail": [
+        "libs/mail/src"
+      ],
+      "@lib/mail/*": [
+        "libs/mail/src/*"
       ]
     }
   }

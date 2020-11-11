@@ -1,4 +1,11 @@
-import { Controller, Get, Inject, Logger } from '@nestjs/common';
+import {
+  ConflictException,
+  Controller,
+  Get,
+  Inject,
+  Logger,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { AppService } from './app.service';
 

@@ -40,11 +40,8 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
       throw new BadRequestException('Error in load groups');
     }
     try {
-      // Logger.log(JSON.stringify(payload), JwtStrategy.name);
-      // const { user } = await this.userService.findById({ id: payload.id });
       const user = plainToClass(User, payload);
 
-      // wrong tenant
       if (
         req.headers[TENANT_ID_HEADER] !== user.tenant.path &&
         req.headers[TENANT_ID_HEADER] !== 'master'
@@ -55,7 +52,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
       user.groups = user.groups.map(group =>
         this.groupsService.getGroupByName({ name: group.name }),
       );
-      // Logger.log(JSON.stringify(user), JwtStrategy.name);
+
       return user;
     } catch (error) {
       throw new UnauthorizedException();

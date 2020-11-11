@@ -27,6 +27,8 @@ import { ContentType } from '../entities/content-type.entity';
 import { ContentTypeSeed } from './seed/content-type.seed';
 import adminRoutes from '@app/fona/config/admin-route';
 import { DEFAULT_AUTH_CORE_CONFIG } from '@lib/auth/configs/core.config';
+import { EMAIL_CONFIG_TOKEN } from '@app/fona/const';
+import { IMailConfig, MailModule } from '@lib/mail';
 
 jest.setTimeout(10000);
 describe('ContentType (e2e)', () => {
@@ -37,10 +39,8 @@ describe('ContentType (e2e)', () => {
   let staffToken;
   let adminInactiveToken;
   let superToken;
-  let addUserToken;
-  let gAdmin;
-  let gUser;
   const pass = '12345678';
+  let sendGridServiceSpy: any;
 
   beforeAll(async () => {
     // Get connection options
@@ -72,12 +72,46 @@ describe('ContentType (e2e)', () => {
 
     // Create server
     const moduleFixture: TestingModule = await Test.createTestingModule({
+      providers: [
+        {
+          provide: EMAIL_CONFIG_TOKEN,
+          useValue: {
+            from: faker.internet.email(),
+            verifyHost: faker.internet.url(),
+            templates: {
+              confirm: faker.random.alphaNumeric(10),
+              forgetPassword: faker.random.alphaNumeric(10),
+              passwordChanged: faker.random.alphaNumeric(10),
+            },
+          } as IMailConfig,
+        },
+      ],
       imports: [
         WinstonModule.forRoot({
           level: 'info',
           format: winston.format.json(),
           transports: [new Console()],
         }),
+        MailModule.forRootAsync(
+          {
+            imports: [],
+            useFactory: () => ({
+              apiKey: 'SG.dummykey',
+            }),
+          },
+          {
+            imports: [],
+            useFactory: () => ({
+              from: faker.internet.email(),
+              verifyHost: faker.internet.url(),
+              templates: {
+                confirm: faker.random.alphaNumeric(10),
+                forgetPassword: faker.random.alphaNumeric(10),
+                passwordChanged: faker.random.alphaNumeric(10),
+              },
+            }),
+          },
+        ),
         TypeOrmModule.forRoot(connectionOptions),
         PassportModule.register({ defaultStrategy: 'jwt' }),
         CoreModule.forRoot({
@@ -118,9 +152,15 @@ describe('ContentType (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
+    const sendGridService = moduleFixture.get('SendGridToken');
     app.setGlobalPrefix('api');
 
     await app.init();
+
+    // mock
+    sendGridServiceSpy = jest
+      .spyOn(sendGridService, 'send')
+      .mockImplementation();
 
     // frequency use
     superToken = await request(app.getHttpServer())
