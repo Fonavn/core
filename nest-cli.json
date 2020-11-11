@@ -73,6 +73,24 @@
       "compilerOptions": {
         "tsConfigPath": "libs/mail/tsconfig.lib.json"
       }
+    },
+    "photo": {
+      "type": "library",
+      "root": "libs/photo",
+      "entryFile": "index",
+      "sourceRoot": "libs/photo/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/photo/tsconfig.lib.json"
+      }
+    },
+    "storage": {
+      "type": "library",
+      "root": "libs/storage",
+      "entryFile": "index",
+      "sourceRoot": "libs/storage/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/storage/tsconfig.lib.json"
+      }
     }
   },
   "compilerOptions": {

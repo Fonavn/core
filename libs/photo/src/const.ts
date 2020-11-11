@@ -1,0 +1,1 @@
+export const PHOTO_BUCKET_TOKEN = 'PHOTO_BUCKET_TOKEN';

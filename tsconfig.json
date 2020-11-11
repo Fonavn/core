@@ -47,6 +47,18 @@
       ],
       "@lib/mail/*": [
         "libs/mail/src/*"
+      ],
+      "@lib/photo": [
+        "libs/photo/src"
+      ],
+      "@lib/photo/*": [
+        "libs/photo/src/*"
+      ],
+      "@lib/storage": [
+        "libs/storage/src"
+      ],
+      "@lib/storage/*": [
+        "libs/storage/src/*"
       ]
     }
   }
