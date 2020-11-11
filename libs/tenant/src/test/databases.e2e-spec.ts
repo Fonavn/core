@@ -32,6 +32,8 @@ import { InDatabaseDto } from '../databases/dto/in-database.dto';
 import { InUpdateDatabaseDto } from '../databases/dto/in-update-database.dto';
 import { DatabaseEntity } from '../databases/databases.entity';
 import { DatabaseSeed } from './seed/database.seed';
+import { SendGridModule } from '@ntegral/nestjs-sendgrid';
+import { MailModule } from '@lib/mail';
 
 jest.setTimeout(10000);
 describe('Database (e2e)', () => {
@@ -43,6 +45,7 @@ describe('Database (e2e)', () => {
   let adminInactiveToken;
   let superToken;
   const pass = '12345678';
+  let sendGridServiceSpy: any;
 
   beforeAll(async () => {
     // Get connection options
@@ -80,6 +83,26 @@ describe('Database (e2e)', () => {
           format: winston.format.json(),
           transports: [new Console()],
         }),
+        MailModule.forRootAsync(
+          {
+            imports: [],
+            useFactory: () => ({
+              apiKey: 'SG.dummykey',
+            }),
+          },
+          {
+            imports: [],
+            useFactory: () => ({
+              from: faker.internet.email(),
+              verifyHost: faker.internet.url(),
+              templates: {
+                confirm: faker.random.alphaNumeric(10),
+                forgetPassword: faker.random.alphaNumeric(10),
+                passwordChanged: faker.random.alphaNumeric(10),
+              },
+            }),
+          },
+        ),
         TypeOrmModule.forRoot(connectionOptions),
         PassportModule.register({ defaultStrategy: 'jwt' }),
         CoreModule.forRoot({
@@ -120,9 +143,15 @@ describe('Database (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
+    const sendGridService = moduleFixture.get('SendGridToken');
     app.setGlobalPrefix('api');
 
     await app.init();
+
+    // mock
+    sendGridServiceSpy = jest
+      .spyOn(sendGridService, 'send')
+      .mockImplementation();
 
     // frequency use
     superToken = await request(app.getHttpServer())

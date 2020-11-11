@@ -49,11 +49,13 @@ describe('Multi-tenant test (e2e)', () => {
     // clean tenant db
     const tenant1Connection: Connection = await createConnection({
       ...connectionOptions,
+      synchronize: true,
       database: dbname1,
     });
     await tenant1Connection.close();
     const tenant2Connection: Connection = await createConnection({
       ...connectionOptions,
+      synchronize: true,
       database: dbname1,
     });
     await tenant2Connection.close();
@@ -64,6 +66,9 @@ describe('Multi-tenant test (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
+    const sendGridService = moduleFixture.get('SendGridToken');
+    // Fix mail send fail
+    jest.spyOn(sendGridService, 'send').mockImplementation();
     app.setGlobalPrefix('api');
     await app.init();
 

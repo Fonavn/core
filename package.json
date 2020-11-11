@@ -10,8 +10,8 @@
     "build": "nest build",
     "format": "prettier --write \"apps/**/*.ts\" \"libs/**/*.ts\"",
     "start": "nest start",
-    "start:dev": "nest start --watch",
-    "start:debug": "nest start --debug --watch",
+    "start:dev": "nest start  --watch",
+    "start:debug": "nest start  --debug --watch",
     "start:prod": "node dist/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest --runInBand --bail",
@@ -34,6 +34,8 @@
     "@nestjs/typeorm": "^7.1.4",
     "@nestjsx/crud": "^4.6.2",
     "@nestjsx/crud-typeorm": "^4.6.2",
+    "@ntegral/nestjs-sendgrid": "^1.0.0",
+    "@sendgrid/mail": "^7.4.0",
     "@types/lodash": "^4.14.162",
     "@types/reflect-metadata": "^0.1.0",
     "apollo-server-express": "^2.18.2",
@@ -116,12 +118,14 @@
       "@lib/tenant/(.*)": "<rootDir>/libs/tenant/src/$1",
       "@lib/tenant": "<rootDir>/libs/tenant/src",
       "@lib/shared/(.*)": "<rootDir>/libs/shared/src/$1",
-      "@lib/shared": "<rootDir>/libs/shared/src"
+      "@lib/shared": "<rootDir>/libs/shared/src",
+      "@lib/mail/(.*)": "<rootDir>/libs/mail/src/$1",
+      "@lib/mail": "<rootDir>/libs/mail/src"
     }
   },
   "husky": {
     "hooks": {
-      "pre-commit": "yarn format && yarn lint && yarn test",
+      "pre-commit": "yarn format && yarn lint && yarn test && typeorm migration:generate",
       "pre-push": "yarn lint && yarn test && yarn test:e2e"
     }
   }

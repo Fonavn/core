@@ -49,6 +49,6 @@ export class TenantEntity extends BaseEntity {
   description: string;
 
   @OneToOne(() => DatabaseEntity, { cascade: ['insert'] })
-  @JoinColumn()
+  @JoinColumn({ name: 'database_id' })
   database: DatabaseEntity;
 }

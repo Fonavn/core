@@ -29,12 +29,15 @@ import {
 import adminRoutes from '@app/fona/config/admin-route';
 import { DEFAULT_AUTH_CORE_CONFIG } from '../configs/core.config';
 import { InConfirmDto } from '../dto/in-confirm.dto';
+import { SendGridModule, SendGridService } from '@ntegral/nestjs-sendgrid';
+import { MailModule } from '@lib/mail';
 
 jest.setTimeout(10000);
 describe('Account (e2e)', () => {
   let app;
   let connectionOptions: ConnectionOptions;
   let usersService: UsersService;
+  let sendGridServiceSpy: any;
   // Create data
   let superToken;
   const pass = '12345678';
@@ -73,6 +76,26 @@ describe('Account (e2e)', () => {
           format: winston.format.json(),
           transports: [new Console()],
         }),
+        MailModule.forRootAsync(
+          {
+            imports: [],
+            useFactory: () => ({
+              apiKey: 'SG.dummykey',
+            }),
+          },
+          {
+            imports: [],
+            useFactory: () => ({
+              from: faker.internet.email(),
+              verifyHost: faker.internet.url(),
+              templates: {
+                confirm: faker.random.alphaNumeric(10),
+                forgetPassword: faker.random.alphaNumeric(10),
+                passwordChanged: faker.random.alphaNumeric(10),
+              },
+            }),
+          },
+        ),
         TypeOrmModule.forRoot(connectionOptions),
         PassportModule.register({ defaultStrategy: 'jwt' }),
         CoreModule.forRoot({
@@ -115,9 +138,15 @@ describe('Account (e2e)', () => {
     app = moduleFixture.createNestApplication();
 
     usersService = moduleFixture.get(UsersService);
+    const sendGridService = moduleFixture.get('SendGridToken');
     app.setGlobalPrefix('api');
 
     await app.init();
+
+    // mock
+    sendGridServiceSpy = jest
+      .spyOn(sendGridService, 'send')
+      .mockImplementation();
 
     // frequency use
     superToken = await request(app.getHttpServer())
@@ -132,11 +161,11 @@ describe('Account (e2e)', () => {
 
   describe('Confirmation', () => {
     let email;
-    beforeEach(() => {
+    beforeEach(async () => {
       email = faker.internet.email();
       const username = faker.random.alphaNumeric(10);
 
-      return request(app.getHttpServer())
+      await request(app.getHttpServer())
         .post('/api/auth/signup')
         .send({
           email,
@@ -144,6 +173,8 @@ describe('Account (e2e)', () => {
           username,
         })
         .expect(201);
+
+      expect(sendGridServiceSpy).toHaveBeenCalled();
     });
 
     it('Can confirm account', async () => {
@@ -209,6 +240,7 @@ describe('Account (e2e)', () => {
         const { user } = await usersService.findByEmail({ email });
         expect(user.resetPwCode).toBeDefined();
         expect(user.expiredResetPw).toBeDefined();
+        expect(sendGridServiceSpy).toHaveBeenCalled();
       });
 
       it('Cannot request change password with wrong email', async () => {
@@ -229,6 +261,7 @@ describe('Account (e2e)', () => {
             email,
           })
           .expect(200);
+        expect(sendGridServiceSpy).toHaveBeenCalled();
       });
 
       it('Can reset password', async () => {
@@ -241,9 +274,10 @@ describe('Account (e2e)', () => {
             newPassword: faker.random.alphaNumeric(10),
           })
           .expect(200);
+        expect(sendGridServiceSpy).toHaveBeenCalled();
       });
 
-      it('Can reset password with wrong code', async () => {
+      it('Cannot reset password with wrong code', async () => {
         const { user } = await usersService.findByEmail({ email });
         request(app.getHttpServer())
           .post('/api/auth/reset-password')
@@ -255,7 +289,7 @@ describe('Account (e2e)', () => {
           .expect(400);
       });
 
-      it('Can reset password because expired code', async () => {
+      it('Cannot reset password because expired code', async () => {
         const { user } = await usersService.findByEmail({ email });
         user.expiredResetPw = new Date();
         await usersService.update({ id: user.id, item: user });
@@ -302,7 +336,7 @@ describe('Account (e2e)', () => {
     });
 
     it('Can change password', async () => {
-      return request(app.getHttpServer())
+      await request(app.getHttpServer())
         .post('/api/auth/change-password')
         .set('Authorization', `JWT ${token}`)
         .send({
@@ -310,6 +344,7 @@ describe('Account (e2e)', () => {
           newPassword: '12345',
         })
         .expect(200);
+      expect(sendGridServiceSpy).toHaveBeenCalled();
     });
 
     it('Cannot change password without login', () => {

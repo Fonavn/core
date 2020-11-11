@@ -23,14 +23,16 @@ import { BaseSeed } from './seed/base.seed';
 import { Console } from 'winston/lib/winston/transports';
 import adminRoutes from '@app/fona/config/admin-route';
 import { DEFAULT_AUTH_CORE_CONFIG } from '@lib/auth/configs/core.config';
+import { MailModule } from '@lib/mail';
+import * as faker from 'faker';
 
 describe('AccountController (e2e)', () => {
   let app;
   let connectionOptions: ConnectionOptions;
+  let sendGridServiceSpy;
   // Create data
   const admin = 'admin@admin.com';
   const user1 = 'user1@user1.com';
-  const user2 = 'user2@user2.com';
   const user3 = 'user3@user3.com';
   const user4 = 'user4@user4.com';
   const user5 = 'user5@user5.com';
@@ -66,6 +68,26 @@ describe('AccountController (e2e)', () => {
           format: winston.format.json(),
           transports: [new Console()],
         }),
+        MailModule.forRootAsync(
+          {
+            imports: [],
+            useFactory: () => ({
+              apiKey: 'SG.dummykey',
+            }),
+          },
+          {
+            imports: [],
+            useFactory: () => ({
+              from: faker.internet.email(),
+              verifyHost: faker.internet.url(),
+              templates: {
+                confirm: faker.random.alphaNumeric(10),
+                forgetPassword: faker.random.alphaNumeric(10),
+                passwordChanged: faker.random.alphaNumeric(10),
+              },
+            }),
+          },
+        ),
         TypeOrmModule.forRoot(connectionOptions),
         PassportModule.register({ defaultStrategy: 'jwt' }),
         CoreModule.forRoot({
@@ -106,9 +128,15 @@ describe('AccountController (e2e)', () => {
     }).compile();
 
     app = moduleFixture.createNestApplication();
+    const sendGridService = moduleFixture.get('SendGridToken');
     app.setGlobalPrefix('api');
 
     await app.init();
+
+    // mock
+    sendGridServiceSpy = jest
+      .spyOn(sendGridService, 'send')
+      .mockImplementation();
   });
 
   beforeEach(async () => {

@@ -10,13 +10,16 @@ export class AccessGuard extends AuthGuard('jwt') {
   }
 
   async canActivate(context: ExecutionContext) {
-    // TODO why this
+    // TODO why this: just login user
+    // So don't need to create separate guard and
+    // But this lead to always return 403 instead of some cases they are 401
+    // TODO don't use this. Debug too hard
     try {
       await super.canActivate(context);
     } catch (error) {
-      Logger.error('Error in canActivate', error.message, AccessGuard.name);
+      // ignore error
+      // Logger.error('Error in canActivate', error.message, AccessGuard.name);
     }
-    // TODO check if and or or for class and hander
     const roles = [
       ...(this.reflector.get<string[]>('roles', context.getHandler()) || []),
       ...(this.reflector.get<string[]>('roles', context.getClass()) || []),
@@ -29,7 +32,6 @@ export class AccessGuard extends AuthGuard('jwt') {
     ];
     const request = context.switchToHttp().getRequest();
     const user: User = request.user;
-    // Logger.log(JSON.stringify(user), AccessGuard.name);
     const hasRole =
       roles.length > 0
         ? roles.filter(
