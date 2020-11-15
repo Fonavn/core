@@ -127,7 +127,13 @@
       "@lib/storage/(.*)": "<rootDir>/libs/storage/src/$1",
       "@lib/storage": "<rootDir>/libs/storage/src",
       "@lib/facebook/(.*)": "<rootDir>/libs/facebook/src/$1",
-      "@lib/facebook": "<rootDir>/libs/facebook/src"
+      "@lib/facebook": "<rootDir>/libs/facebook/src",
+      "@lib/crm/(.*)": "<rootDir>/libs/crm/src/$1",
+      "@lib/crm": "<rootDir>/libs/crm/src",
+      "@lib/scm/(.*)": "<rootDir>/libs/scm/src/$1",
+      "@lib/scm": "<rootDir>/libs/scm/src",
+      "@lib/promotion/(.*)": "<rootDir>/libs/promotion/src/$1",
+      "@lib/promotion": "<rootDir>/libs/promotion/src"
     }
   },
   "husky": {

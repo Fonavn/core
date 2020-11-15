@@ -65,6 +65,24 @@
       ],
       "@lib/facebook/*": [
         "libs/facebook/src/*"
+      ],
+      "@lib/crm": [
+        "libs/crm/src"
+      ],
+      "@lib/crm/*": [
+        "libs/crm/src/*"
+      ],
+      "@lib/scm": [
+        "libs/scm/src"
+      ],
+      "@lib/scm/*": [
+        "libs/scm/src/*"
+      ],
+      "@lib/promotion": [
+        "libs/promotion/src"
+      ],
+      "@lib/promotion/*": [
+        "libs/promotion/src/*"
       ]
     }
   }

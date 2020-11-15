@@ -100,6 +100,33 @@
       "compilerOptions": {
         "tsConfigPath": "libs/facebook/tsconfig.lib.json"
       }
+    },
+    "crm": {
+      "type": "library",
+      "root": "libs/crm",
+      "entryFile": "index",
+      "sourceRoot": "libs/crm/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/crm/tsconfig.lib.json"
+      }
+    },
+    "scm": {
+      "type": "library",
+      "root": "libs/scm",
+      "entryFile": "index",
+      "sourceRoot": "libs/scm/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/scm/tsconfig.lib.json"
+      }
+    },
+    "promotion": {
+      "type": "library",
+      "root": "libs/promotion",
+      "entryFile": "index",
+      "sourceRoot": "libs/promotion/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/promotion/tsconfig.lib.json"
+      }
     }
   },
   "compilerOptions": {
