@@ -125,7 +125,9 @@
       "@lib/photo/(.*)": "<rootDir>/libs/photo/src/$1",
       "@lib/photo": "<rootDir>/libs/photo/src",
       "@lib/storage/(.*)": "<rootDir>/libs/storage/src/$1",
-      "@lib/storage": "<rootDir>/libs/storage/src"
+      "@lib/storage": "<rootDir>/libs/storage/src",
+      "@lib/facebook/(.*)": "<rootDir>/libs/facebook/src/$1",
+      "@lib/facebook": "<rootDir>/libs/facebook/src"
     }
   },
   "husky": {
