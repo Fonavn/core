@@ -59,6 +59,12 @@
       ],
       "@lib/storage/*": [
         "libs/storage/src/*"
+      ],
+      "@lib/facebook": [
+        "libs/facebook/src"
+      ],
+      "@lib/facebook/*": [
+        "libs/facebook/src/*"
       ]
     }
   }
