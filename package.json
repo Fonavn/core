@@ -45,6 +45,7 @@
     "crypto-js": "^4.0.0",
     "dataloader": "^2.0.0",
     "graphql-relay": "^0.6.0",
+    "handlebars": "^4.7.6",
     "helmet": "^4.1.1",
     "husky": "^4.3.0",
     "jsonwebtoken": "^8.5.1",
@@ -133,7 +134,11 @@
       "@lib/scm/(.*)": "<rootDir>/libs/scm/src/$1",
       "@lib/scm": "<rootDir>/libs/scm/src",
       "@lib/promotion/(.*)": "<rootDir>/libs/promotion/src/$1",
-      "@lib/promotion": "<rootDir>/libs/promotion/src"
+      "@lib/promotion": "<rootDir>/libs/promotion/src",
+      "@lib/website/(.*)": "<rootDir>/libs/website/src/$1",
+      "@lib/website": "<rootDir>/libs/website/src",
+      "@lib/engine/(.*)": "<rootDir>/libs/engine/src/$1",
+      "@lib/engine": "<rootDir>/libs/engine/src"
     }
   },
   "husky": {

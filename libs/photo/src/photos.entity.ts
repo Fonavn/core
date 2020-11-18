@@ -16,7 +16,4 @@ export abstract class PhotoEntity extends BaseEntity {
 
   @Column({ nullable: true })
   public description: string;
-
-  @Column({ type: 'timestamp', nullable: true })
-  public deletedAt?: Date;
 }

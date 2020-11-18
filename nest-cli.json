@@ -127,6 +127,24 @@
       "compilerOptions": {
         "tsConfigPath": "libs/promotion/tsconfig.lib.json"
       }
+    },
+    "website": {
+      "type": "library",
+      "root": "libs/website",
+      "entryFile": "index",
+      "sourceRoot": "libs/website/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/website/tsconfig.lib.json"
+      }
+    },
+    "engine": {
+      "type": "library",
+      "root": "libs/engine",
+      "entryFile": "index",
+      "sourceRoot": "libs/engine/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/engine/tsconfig.lib.json"
+      }
     }
   },
   "compilerOptions": {

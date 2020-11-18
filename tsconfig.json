@@ -83,6 +83,18 @@
       ],
       "@lib/promotion/*": [
         "libs/promotion/src/*"
+      ],
+      "@lib/website": [
+        "libs/website/src"
+      ],
+      "@lib/website/*": [
+        "libs/website/src/*"
+      ],
+      "@lib/engine": [
+        "libs/engine/src"
+      ],
+      "@lib/engine/*": [
+        "libs/engine/src/*"
       ]
     }
   }

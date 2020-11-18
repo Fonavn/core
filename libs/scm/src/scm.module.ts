@@ -4,6 +4,7 @@ import { InventoryModule } from './inventory/inventory.module';
 import { PurchaseOrderModule } from './purchase-order/purchase-order.module';
 import { SaleOrderModule } from './sale-order/sale-order.module';
 import { ProductModule } from './product/product.module';
+import { CollectionModule } from './collection/collection.module';
 
 @Module({
   providers: [ScmService],
@@ -13,6 +14,7 @@ import { ProductModule } from './product/product.module';
     PurchaseOrderModule,
     SaleOrderModule,
     ProductModule,
+    CollectionModule,
   ],
 })
 export class ScmModule {}
