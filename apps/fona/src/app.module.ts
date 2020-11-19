@@ -20,13 +20,18 @@ import { SendGridModule } from '@ntegral/nestjs-sendgrid';
 import { EMAIL_CONFIG_TOKEN } from './const';
 import sendGrid from './config/send-grid';
 import mail from './config/mail';
+import storage from './config/storage';
 import { IMailConfig, MailModule } from '@lib/mail';
+import { EngineModule } from '@lib/engine';
+import { ScmModule } from '@lib/scm';
+import { WebsiteModule } from '@lib/website';
+import { StorageModule } from '@lib/storage';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       envFilePath: join('./apps/fona/.env'),
-      load: [masterDatabase, authCore, logger, sendGrid, mail],
+      load: [masterDatabase, authCore, logger, sendGrid, mail, storage],
     }),
     WinstonModule.forRootAsync({
       imports: [ConfigModule],
@@ -94,6 +99,14 @@ import { IMailConfig, MailModule } from '@lib/mail';
       },
     ),
     TenantModule.forRoot(entities, adminRoutes),
+    EngineModule,
+    ScmModule,
+    WebsiteModule,
+    StorageModule.registerAsync({
+      imports: [ConfigModule],
+      useFactory: (config: ConfigService) => config.get('storage'),
+      inject: [ConfigService]
+    }),
     TodoModule,
   ],
   controllers: [AppController],

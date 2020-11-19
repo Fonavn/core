@@ -3,13 +3,17 @@ import { TenantService } from '@lib/tenant/tenant-service.decorator';
 import { Connection } from 'typeorm';
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 import { TENANT_CONNECTION } from '@lib/tenant/const';
-import { TemplateSettingEntity } from './template-setting.entity';
+import { SiteTemplateSettingEntity } from '../entity/site-template-setting.entity';
 
 @TenantService()
-export class TemplateSettingService extends TypeOrmCrudService<
-  TemplateSettingEntity
+export class SiteTemplateSettingService extends TypeOrmCrudService<
+  SiteTemplateSettingEntity
 > {
   constructor(@Inject(TENANT_CONNECTION) private connection: Connection) {
-    super(connection.getRepository(TemplateSettingEntity));
+    super(connection.getRepository(SiteTemplateSettingEntity));
+  }
+
+  getBySite(siteId: string) {
+    return this.repo.findOne({ siteId });
   }
 }

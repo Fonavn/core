@@ -6,7 +6,7 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { TemplateSettingEntity } from '../template/template-setting.entity';
+import { TemplateSettingEntity } from '../../template/entity/template-setting.entity';
 import { SiteEntity } from './site.entity';
 
 @Entity('site-template-setting')

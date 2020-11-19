@@ -3,7 +3,7 @@ import { TenantService } from '@lib/tenant/tenant-service.decorator';
 import { Connection } from 'typeorm';
 import { TypeOrmCrudService } from '@nestjsx/crud-typeorm';
 import { TENANT_CONNECTION } from '@lib/tenant/const';
-import { SiteSettingEntity } from './site-setting.entity';
+import { SiteSettingEntity } from '../entity/site-setting.entity';
 
 @TenantService()
 export class SiteSettingService extends TypeOrmCrudService<SiteSettingEntity> {

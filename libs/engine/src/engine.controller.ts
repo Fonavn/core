@@ -11,16 +11,16 @@ import { Request, Response } from 'express';
 import { STORAGE_SERVICE_TOKEN } from '@lib/storage/const';
 import { User } from '@lib/core';
 import * as HandleBars from 'handlebars';
-import { TemplateSettingService } from '@lib/website/template/template-setting.service';
-import { SiteService } from '@lib/website/site/site.service';
-import { SiteSettingService } from '@lib/website/site/site-setting.service';
-import { SiteTemplateSettingService } from '@lib/website/site/site-template-setting.service';
-import { SitePageSettingService } from '@lib/website/site/site-page-setting.service';
-import { SiteEntity } from '@lib/website/site/site.entity';
+import { TemplateSettingService } from '@lib/website/template/service/template-setting.service';
+import { SiteService } from '@lib/website/site/service/site.service';
+import { SiteSettingService } from '@lib/website/site/service/site-setting.service';
+import { SiteTemplateSettingService } from '@lib/website/site/service/site-template-setting.service';
+import { SitePageSettingService } from '@lib/website/site/service/site-page-setting.service';
+import { SiteEntity } from '@lib/website/site/entity/site.entity';
 import { TENANT_ID_HEADER } from '@lib/tenant/const';
-import { SiteSettingEntity } from '@lib/website/site/site-setting.entity';
-import { SiteTemplateSettingEntity } from '@lib/website/site/site-template-setting.entity';
-import { SitePageSettingEntity } from '@lib/website/site/site-page-setting.entity';
+import { SiteSettingEntity } from '@lib/website/site/entity/site-setting.entity';
+import { SiteTemplateSettingEntity } from '@lib/website/site/entity/site-template-setting.entity';
+import { SitePageSettingEntity } from '@lib/website/site/entity/site-page-setting.entity';
 import { CollectionService } from '@lib/scm/collection/collection.service';
 import { ProductService } from '@lib/scm/product/product.service';
 
@@ -31,7 +31,7 @@ interface Collection {
 interface Product {
   name: string;
 }
-@Controller('*')
+@Controller()
 export class EngineController {
   constructor(
     @Inject(STORAGE_SERVICE_TOKEN) private storageService: StorageService,

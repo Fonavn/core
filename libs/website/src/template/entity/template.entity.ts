@@ -6,7 +6,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { SiteEntity } from '../site/site.entity';
+import { SiteEntity } from '../../site/entity/site.entity';
 import { PageEntity } from './page.entity';
 
 enum TemplateType {

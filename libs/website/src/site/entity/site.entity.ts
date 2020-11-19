@@ -1,7 +1,7 @@
 import { BaseEntity } from '@lib/shared';
 import { TenantEntity } from '@lib/tenant/tenant.entity';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { TemplateEntity } from '../template/template.entity';
+import { TemplateEntity } from '../../template/entity/template.entity';
 
 @Entity('site')
 export class SiteEntity extends BaseEntity {

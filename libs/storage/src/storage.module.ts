@@ -9,6 +9,7 @@ export class StorageModule {
   static registerAsync(options: StorageConfigAsyncOptions): DynamicModule {
     return {
       module: StorageModule,
+      imports: [...options.imports],
       providers: [
         AWSStorageService,
         {

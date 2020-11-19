@@ -1,6 +1,6 @@
 import { BaseEntity } from '@lib/shared';
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { PageSettingEntity } from '../template/page-setting.entity';
+import { PageSettingEntity } from '../../template/entity/page-setting.entity';
 import { SiteEntity } from './site.entity';
 
 @Entity('site-page-setting')
